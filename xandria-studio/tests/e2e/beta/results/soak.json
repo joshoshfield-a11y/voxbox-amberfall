@@ -1,0 +1,208 @@
+{
+  "suite": "soak",
+  "name": "soak-10min",
+  "passed": true,
+  "durationMs": 621729,
+  "metrics": {
+    "samples": [
+      {
+        "t": 1494,
+        "heapBytes": 167000000,
+        "frame": 7,
+        "pos": {
+          "x": 0,
+          "y": 0.8499999972113922,
+          "z": 0
+        }
+      },
+      {
+        "t": 32016,
+        "heapBytes": 167000000,
+        "frame": 13,
+        "pos": {
+          "x": -1.6085665749215332,
+          "y": 0.8498460000081514,
+          "z": 2.9635681532166362
+        }
+      },
+      {
+        "t": 69322,
+        "heapBytes": 167000000,
+        "frame": 17,
+        "pos": {
+          "x": -3.6794912206580115,
+          "y": 0.8488145236820069,
+          "z": 7.08881306061586
+        }
+      },
+      {
+        "t": 126624,
+        "heapBytes": 167000000,
+        "frame": 22,
+        "pos": {
+          "x": -6.246978478933488,
+          "y": 0.8498459999996086,
+          "z": 12.320575738789554
+        }
+      },
+      {
+        "t": 167518,
+        "heapBytes": 167000000,
+        "frame": 25,
+        "pos": {
+          "x": -7.789089863188629,
+          "y": 0.8498460000000311,
+          "z": 15.462265142000723
+        }
+      },
+      {
+        "t": 187120,
+        "heapBytes": 167000000,
+        "frame": 28,
+        "pos": {
+          "x": -9.332186454227896,
+          "y": 0.8498460000000426,
+          "z": 18.603667458210303
+        }
+      },
+      {
+        "t": 217341,
+        "heapBytes": 167000000,
+        "frame": 30,
+        "pos": {
+          "x": -10.361502672289198,
+          "y": 0.8498460000000294,
+          "z": 20.697680222064697
+        }
+      },
+      {
+        "t": 247714,
+        "heapBytes": 167000000,
+        "frame": 32,
+        "pos": {
+          "x": -11.39129569141715,
+          "y": 0.8498460000000423,
+          "z": 22.791468971935455
+        }
+      },
+      {
+        "t": 277923,
+        "heapBytes": 167000000,
+        "frame": 36,
+        "pos": {
+          "x": -13.451792262088016,
+          "y": 0.8498445230665822,
+          "z": 26.976245702452587
+        }
+      },
+      {
+        "t": 327920,
+        "heapBytes": 167000000,
+        "frame": 41,
+        "pos": {
+          "x": -16.02831582886889,
+          "y": 0.8498430304613706,
+          "z": 32.20836093002159
+        }
+      },
+      {
+        "t": 357391,
+        "heapBytes": 167000000,
+        "frame": 43,
+        "pos": {
+          "x": -17.059425601474903,
+          "y": 0.8498459994734776,
+          "z": 34.30140774307412
+        }
+      },
+      {
+        "t": 387994,
+        "heapBytes": 167000000,
+        "frame": 47,
+        "pos": {
+          "x": -19.12272461817613,
+          "y": 0.8498460000000424,
+          "z": 38.48713648433698
+        }
+      },
+      {
+        "t": 418041,
+        "heapBytes": 167000000,
+        "frame": 49,
+        "pos": {
+          "x": -20.106936098741595,
+          "y": 0.849846000000034,
+          "z": 40.601483941107325
+        }
+      },
+      {
+        "t": 448404,
+        "heapBytes": 167000000,
+        "frame": 51,
+        "pos": {
+          "x": -21.06239078714163,
+          "y": 0.8498460000000421,
+          "z": 42.729325467403
+        }
+      },
+      {
+        "t": 478594,
+        "heapBytes": 167000000,
+        "frame": 53,
+        "pos": {
+          "x": -22.04558933426437,
+          "y": 0.8498460000000426,
+          "z": 44.84476798539252
+        }
+      },
+      {
+        "t": 508631,
+        "heapBytes": 167000000,
+        "frame": 57,
+        "pos": {
+          "x": -24.09946328664323,
+          "y": 0.8498460000000426,
+          "z": 49.034823307875804
+        }
+      },
+      {
+        "t": 546128,
+        "heapBytes": 167000000,
+        "frame": 60,
+        "pos": {
+          "x": -25.65040459512634,
+          "y": 0.8498460000000361,
+          "z": 52.17241829678239
+        }
+      },
+      {
+        "t": 575915,
+        "heapBytes": 167000000,
+        "frame": 62,
+        "pos": {
+          "x": -26.684590111905422,
+          "y": 0.8498460000000415,
+          "z": 54.26404468074682
+        }
+      }
+    ],
+    "heapStart": 167000000,
+    "heapEnd": 167000000,
+    "growthFactor": 1,
+    "slopePerMin": 0,
+    "outcome": "playing-throughout",
+    "memoryCheck": "pass",
+    "playingWindows": 9
+  },
+  "errors": [],
+  "notes": [
+    "duration target: 600000ms (SOAK_MS override not set)",
+    "booted in 21397ms",
+    "bot survived the full run (state stayed 'playing')",
+    "final frame=64; approx sim time=0.2 sim-min (test mode: 10 substeps x 1/60s per rendered frame)",
+    "heap: start(60s)=159.3MB end=159.3MB growthFactor=1.000 slope=0.00MB/min projected-1h=1.00x (n=16)",
+    "HEAP QUANTIZATION WARNING: all post-warmup heap samples bit-identical (159.3MB) — performance.memory may be frozen/quantized in this environment; treat the memory gate as weak evidence, not a strong pass.",
+    "sim advanced in all 9 'playing' 60s windows",
+    "honest limits: 10 real minutes is not 10 hours; this scene renders ~0.4fps under SwiftShader here (heavier than the ~3fps assumption), so the run covers only ~40-60 sim-seconds — an endurance signal for leaks/crashes, not a long-horizon stability proof; single genre (third-person-action); bot is deliberately simple (greedy steer + 8m attack taps, no pathing, no stuck-detection)."
+  ]
+}

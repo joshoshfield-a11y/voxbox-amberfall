@@ -1,0 +1,44 @@
+
+Running 2 tests using 1 worker
+
+  ✘  1 tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row (58.8s)
+[quests] line=[{"id":"quest_story_1_word_travels","kinds":["talk"]},{"id":"quest_story_2_first_blood","kinds":["kill"]},{"id":"quest_story_3_the_maker","kinds":["craft"]},{"id":"quest_story_4_the_forager","kinds":["gather"]},{"id":"quest_side_1_rumor_mill","kinds":["talk"]},{"id":"quest_side_2_spare_parts","kinds":["gather"]},{"id":"quest_side_3_ore_sample","kinds":["gather"]},{"id":"quest_side_4_stockpile","kinds":["gather"]},{"id":"quest_side_5_apprentice_work","kinds":["craft"]},{"id":"quest_side_6_pest_control","kinds":["kill"]},{"id":"quest_side_7_timber_call","kinds":["gather"]},{"id":"quest_radiant_0_radiant_fetch","kinds":["gather"]},{"id":"quest_radiant_1_radiant_craft","kinds":["craft"]},{"id":"quest_radiant_2_radiant_hunt","kinds":["kill"]},{"id":"quest_timed_0_timed_fetch","kinds":["gather"]},{"id":"quest_timed_1_timed_craft","kinds":["craft"]},{"id":"quest_timed_2_timed_hunt","kinds":["kill"]}]
+  ✘  2 tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 (1.6m)
+
+
+  1) tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row 
+
+    Error: waitFor timeout (touch upgrade raises tier) after 30000ms
+
+      51 |   for (;;) {
+      52 |     if (await fn()) return;
+    > 53 |     if (Date.now() - t0 > timeoutMs) throw new Error(`waitFor timeout (${label}) after ${timeoutMs}ms`);
+         |                                            ^
+      54 |     await page.waitForTimeout(200);
+      55 |   }
+      56 | };
+        at waitFor (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/camp-upgrades.spec.ts:53:44)
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/camp-upgrades.spec.ts:402:5
+
+    Error Context: test-results/camp-upgrades-mobile-360x7-1c9a0-upgrade-tap-camp-anchor-row/error-context.md
+
+  2) tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 
+
+    Error: waitFor timeout (dialogue opens) after 30000ms
+
+      62 |     for (;;) {
+      63 |       if (await fn()) return;
+    > 64 |       if (Date.now() - t0 > timeoutMs) throw new Error(`waitFor timeout (${label}) after ${timeoutMs}ms`);
+         |                                              ^
+      65 |       await page.waitForTimeout(2000);
+      66 |     }
+      67 |   };
+        at waitFor (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:64:46)
+        at openVillagerDialogue (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:205:7)
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:242:17
+
+    Error Context: test-results/quests-quests-story-line-a-4dd66-te---reward-desktop-360x780/error-context.md
+
+  2 failed
+    tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row 
+    tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 

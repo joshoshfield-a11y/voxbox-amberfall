@@ -1,0 +1,18 @@
+{
+  "setup": {
+    "villager": "npc-c04078fc-5",
+    "nearestOther": 1353.78,
+    "player": {
+      "x": 3691,
+      "z": -451.6
+    }
+  },
+  "before": {
+    "prompted": null,
+    "role": null,
+    "vendor": null,
+    "pill": "[E] Talk to Yau Yard"
+  },
+  "opened": null,
+  "errors": []
+}

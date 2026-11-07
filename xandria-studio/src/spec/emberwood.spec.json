@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "name": "Ancient Realm",
+    "seed": 3712409144,
+    "genre": "third-person-action",
+    "description": "a heroic knight adventure through ancient forest ruins at dusk",
+    "version": 1
+  },
+  "theme": {
+    "palette": {
+      "primary": "#4a8f45",
+      "secondary": "#6a6558",
+      "accent": "#ff9e2e",
+      "sky": "#8ec4e8",
+      "horizon": "#f0e2b8",
+      "ground": "#8a8a52",
+      "groundAlt": "#a3a85e",
+      "rock": "#8a7a62",
+      "fog": "#e6dcbe",
+      "water": "#2f9fd8"
+    },
+    "environment": "ruins",
+    "timeOfDay": "dusk",
+    "weather": "clear",
+    "retroFilter": false,
+    "bloom": true
+  },
+  "world": {
+    "terrain": {
+      "type": "hills",
+      "size": 8000,
+      "maxHeight": 14,
+      "roughness": 0.5,
+      "water": false,
+      "waterLevel": -2
+    },
+    "boundary": "walls",
+    "gravity": -22,
+    "scatter": {
+      "density": 0.65,
+      "trees": false,
+      "rocks": true,
+      "crystals": false,
+      "buildings": 0,
+      "ruins": true
+    },
+    "portals": {
+      "enabled": true
+    }
+  },
+  "player": {
+    "type": "humanoid",
+    "health": 100,
+    "speed": 7,
+    "jump": 9,
+    "abilities": [
+      "dash",
+      "sprint"
+    ],
+    "weapon": "sword",
+    "camera": "third-person"
+  },
+  "enemies": [
+    {
+      "kind": "walker",
+      "count": 6,
+      "health": 30,
+      "speed": 4.5,
+      "damage": 9,
+      "weapon": "melee"
+    }
+  ],
+  "objective": {
+    "type": "eliminate",
+    "count": 6,
+    "timeLimit": 0,
+    "description": "Eliminate 6 hostiles",
+    "stages": [
+      {
+        "id": "shards",
+        "type": "collect",
+        "count": 14,
+        "timeLimit": 0,
+        "description": "Chapter I — Gather the shards"
+      },
+      {
+        "id": "break",
+        "type": "eliminate",
+        "count": 6,
+        "timeLimit": 0,
+        "description": "Chapter II — Clear the field — the last of them flee. Let them go, or hunt them down?",
+        "choices": [
+          {
+            "label": "Take the high road",
+            "next": "beacon"
+          },
+          {
+            "label": "Hunt the stragglers",
+            "next": "hunt"
+          }
+        ]
+      },
+      {
+        "id": "beacon",
+        "type": "reach",
+        "count": 0,
+        "timeLimit": 0,
+        "next": [],
+        "description": "Chapter III — Reach the beacon",
+        "winText": "You let them run. The beacon flares — Ancient Realm is crossed."
+      },
+      {
+        "id": "hunt",
+        "type": "eliminate",
+        "count": 1,
+        "timeLimit": 0,
+        "next": [],
+        "description": "Chapter III — Hunt the stragglers",
+        "winText": "No stragglers left. The beacon flares over a quiet field — Ancient Realm is crossed."
+      }
+    ]
+  },
+  "pickups": {
+    "coins": 14,
+    "health": 4,
+    "ammo": 0,
+    "powerups": 2
+  },
+  "rules": {
+    "lives": 3,
+    "difficulty": "normal"
+  },
+  "audio": {
+    "music": true,
+    "mood": "heroic",
+    "tempo": 112,
+    "key": 10,
+    "mode": "minor",
+    "sfxVolume": 0.9,
+    "musicVolume": 0.7
+  },
+  "narrative": {
+    "premise": "Something iron-jawed stirs in the ancient ruins. Cross Ancient Realm: gather the shards, break the raiders, and reach the beacon on the far side.",
+    "winText": "The beacon flares. Ancient Realm is crossed and the raiders are scattered.",
+    "loseText": "The raiders reclaim the ancient ruins. The beacon goes dark."
+  },
+  "progression": {
+    "enabled": true,
+    "xpPerKill": 20,
+    "xpPerPickup": 5
+  },
+  "custom": {
+    "quality": "standard"
+  }
+}

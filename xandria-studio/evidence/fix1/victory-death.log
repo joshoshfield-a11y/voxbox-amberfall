@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/e2e/victory-path.spec.ts:426:1 › victory-path: death reaches DEFEATED (2.6m)
+
+  1 passed (3.2m)

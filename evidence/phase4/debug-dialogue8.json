@@ -1,0 +1,14 @@
+{
+  "setup": {
+    "villager": "npc-c04078fc-5",
+    "name": "Yau Yard",
+    "nearestOther": 1353.8,
+    "terrainH": 0.9377437398631396,
+    "player": {
+      "x": 3691,
+      "z": -451.6
+    }
+  },
+  "stable": 0,
+  "errors": []
+}

@@ -1,0 +1,2870 @@
+{
+ "label": "before-mobile",
+ "w": 390,
+ "h": 844,
+ "tier": "s25",
+ "touch": true,
+ "errors": [],
+ "samples": [
+  {
+   "calls": 507,
+   "triangles": 678294,
+   "geometries": 258,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 561.9499999999922,
+    "frameMsVariance": 82802.46583336749,
+    "fps": 1.7795177506895878,
+    "drawCalls": 507,
+    "triangles": 678294,
+    "geometries": 258,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 461.6000000005588,
+    "frames": 12,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 96
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  },
+  {
+   "calls": 507,
+   "triangles": 678294,
+   "geometries": 258,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 541.361538461517,
+    "frameMsVariance": 81519.66236690222,
+    "fps": 1.84719439589646,
+    "drawCalls": 507,
+    "triangles": 678294,
+    "geometries": 258,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 232.80000000074506,
+    "frames": 13,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 94
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  },
+  {
+   "calls": 507,
+   "triangles": 678294,
+   "geometries": 258,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 541.361538461517,
+    "frameMsVariance": 81519.66236690222,
+    "fps": 1.84719439589646,
+    "drawCalls": 507,
+    "triangles": 678294,
+    "geometries": 258,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 232.80000000074506,
+    "frames": 13,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 94
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  },
+  {
+   "calls": 507,
+   "triangles": 678294,
+   "geometries": 258,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 541.361538461517,
+    "frameMsVariance": 81519.66236690222,
+    "fps": 1.84719439589646,
+    "drawCalls": 507,
+    "triangles": 678294,
+    "geometries": 258,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 232.80000000074506,
+    "frames": 13,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 94
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  },
+  {
+   "calls": 507,
+   "triangles": 678294,
+   "geometries": 258,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 541.361538461517,
+    "frameMsVariance": 81519.66236690222,
+    "fps": 1.84719439589646,
+    "drawCalls": 507,
+    "triangles": 678294,
+    "geometries": 258,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 232.80000000074506,
+    "frames": 13,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 94
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  },
+  {
+   "calls": 509,
+   "triangles": 718294,
+   "geometries": 260,
+   "textures": 24,
+   "programs": 36,
+   "perf": {
+    "frameMs": 553.7999999999801,
+    "frameMsVariance": 77708.12857146465,
+    "fps": 1.8057060310582087,
+    "drawCalls": 509,
+    "triangles": 718294,
+    "geometries": 260,
+    "textures": 24,
+    "programs": 36,
+    "physicsMs": 421.79999999981374,
+    "frames": 14,
+    "chunksLoaded": 32,
+    "chunkBuildMs": 8.024751684696213,
+    "streamQueue": 92
+   },
+   "inst": {
+    "buckets": 197,
+    "instances": 851,
+    "perBucket": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     12,
+     12,
+     14,
+     14,
+     14,
+     14,
+     16,
+     24,
+     40,
+     40
+    ]
+   },
+   "tier": "s25",
+   "specSeed": 1963762346,
+   "worldSeed": 3712409144,
+   "rosterCount": 30,
+   "rosterHash": "ore:2321.457,-578.892|ore:2326.194,-579.880|herb:2313.383,-583.957|herb:2317.557,-582.477|herb:2317.317,-584.427|herb:2325.546,-571.503|fiber:2316.926,-570.991|scrap:2324.975,-576.581|herb:2321.792,-592.126|ore:2312.515,-576.892|scrap:2312.477,-573.249|fiber:2324.459,-585.864|scrap:2325.385,-582.674|ore:2331.695,-580.164|crystal:2323.150,-574.089|herb:2327.325,-577.864|ore:2327.974,-586.324|scrap:2314.822,-578.934|crystal:2324.325,-582.528|fiber:2329.559,-575.391|fiber:2330.852,-576.720|herb:2322.007,-592.612|ore:2326.063,-582.009|herb:2323.042,-587.172|scrap:2323.366,-586.580|fiber:2310.396,-579.432|crystal:2310.819,-581.720|scrap:2324.137,-582.059|fiber:2321.297,-591.047|ore:2312.627,-576.959",
+   "instancedCensus": {
+    "totalMeshes": 231,
+    "totalInstances": 38835,
+    "groups": [
+     {
+      "key": "BufferGeometry|5f7634|sh0",
+      "meshes": 1,
+      "instances": 29760
+     },
+     {
+      "key": "CylinderGeometry|32e0cf|sh1",
+      "meshes": 6,
+      "instances": 2016
+     },
+     {
+      "key": "DodecahedronGeometry|b9ce06|sh0",
+      "meshes": 1,
+      "instances": 1888
+     },
+     {
+      "key": "BufferGeometry|e0bf41|sh1",
+      "meshes": 3,
+      "instances": 1619
+     },
+     {
+      "key": "CylinderGeometry|b9ce06|sh1",
+      "meshes": 1,
+      "instances": 640
+     },
+     {
+      "key": "BoxGeometry|b9ce06|sh1",
+      "meshes": 2,
+      "instances": 469
+     },
+     {
+      "key": "BufferGeometry|7f2b56|sh1",
+      "meshes": 3,
+      "instances": 397
+     },
+     {
+      "key": "BoxGeometry|cca8f6|sh0",
+      "meshes": 1,
+      "instances": 393
+     },
+     {
+      "key": "BoxGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 226
+     },
+     {
+      "key": "CylinderGeometry|0b692f|sh1",
+      "meshes": 1,
+      "instances": 160
+     },
+     {
+      "key": "BufferGeometry|dccac6|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "CylinderGeometry|196593|sh1",
+      "meshes": 1,
+      "instances": 128
+     },
+     {
+      "key": "BoxGeometry|21d834|sh1",
+      "meshes": 4,
+      "instances": 110
+     },
+     {
+      "key": "BoxGeometry|11c19f|sh0",
+      "meshes": 1,
+      "instances": 92
+     },
+     {
+      "key": "BoxGeometry|a03c71|sh1",
+      "meshes": 26,
+      "instances": 87
+     },
+     {
+      "key": "BufferGeometry|bb4ae8|sh1",
+      "meshes": 20,
+      "instances": 85
+     },
+     {
+      "key": "BufferGeometry|a03c71|sh1",
+      "meshes": 21,
+      "instances": 84
+     },
+     {
+      "key": "BufferGeometry|2f65fa|sh1",
+      "meshes": 21,
+      "instances": 74
+     },
+     {
+      "key": "BufferGeometry|c6c194|sh1",
+      "meshes": 20,
+      "instances": 72
+     },
+     {
+      "key": "BoxGeometry|2f65fa|sh1",
+      "meshes": 13,
+      "instances": 68
+     },
+     {
+      "key": "BoxGeometry|edfcd2|sh0",
+      "meshes": 11,
+      "instances": 67
+     },
+     {
+      "key": "BoxGeometry|2d490f|sh1",
+      "meshes": 15,
+      "instances": 64
+     },
+     {
+      "key": "BoxGeometry|6d2bd9|sh1",
+      "meshes": 8,
+      "instances": 55
+     },
+     {
+      "key": "BoxGeometry|815898|sh1",
+      "meshes": 2,
+      "instances": 29
+     },
+     {
+      "key": "BoxGeometry|4f80fc|sh1",
+      "meshes": 7,
+      "instances": 19
+     },
+     {
+      "key": "BufferGeometry|8d31b0|sh1",
+      "meshes": 9,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|27f58f|sh1",
+      "meshes": 5,
+      "instances": 15
+     },
+     {
+      "key": "BoxGeometry|a0f750|sh1",
+      "meshes": 1,
+      "instances": 12
+     },
+     {
+      "key": "CircleGeometry|558fd3|sh0",
+      "meshes": 1,
+      "instances": 10
+     },
+     {
+      "key": "PlaneGeometry|8d7cf2|sh0",
+      "meshes": 2,
+      "instances": 7
+     },
+     {
+      "key": "BoxGeometry|43022e|sh1",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "BufferGeometry|f7d650|sh1",
+      "meshes": 2,
+      "instances": 6
+     },
+     {
+      "key": "BoxGeometry|5c20b0|sh0",
+      "meshes": 1,
+      "instances": 6
+     },
+     {
+      "key": "SphereGeometry|ae2166|sh0",
+      "meshes": 2,
+      "instances": 5
+     },
+     {
+      "key": "BufferGeometry|8d7cf2|sh1",
+      "meshes": 1,
+      "instances": 4
+     },
+     {
+      "key": "BoxGeometry|4a58ef|sh1",
+      "meshes": 1,
+      "instances": 3
+     },
+     {
+      "key": "BufferGeometry|4e7194|sh1",
+      "meshes": 2,
+      "instances": 3
+     },
+     {
+      "key": "BoxGeometry|191f57|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|f53e4b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BufferGeometry|edfcd2|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|d3697b|sh1",
+      "meshes": 1,
+      "instances": 2
+     },
+     {
+      "key": "BoxGeometry|3a327c|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|38263d|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|8338ff|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|5cccfd|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|f37b20|sh1",
+      "meshes": 1,
+      "instances": 1
+     },
+     {
+      "key": "BoxGeometry|48c2dc|sh0",
+      "meshes": 1,
+      "instances": 0
+     },
+     {
+      "key": "BoxGeometry|b0911d|sh0",
+      "meshes": 1,
+      "instances": 0
+     }
+    ]
+   }
+  }
+ ],
+ "rosterSha": "4954f0a20e1746020d15259cbe494d2a8240eac4752e0dc9f392be17c563c60d",
+ "rosterCount": 30,
+ "specSeed": 1963762346,
+ "worldSeed": 3712409144
+}

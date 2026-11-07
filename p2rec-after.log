@@ -1,0 +1,14 @@
+p2rec-after-spawn-844x390 calls=676 tris=1951030 geoms=379 tex=25 progs=39 inst=237 buckets=null luma=0.2787 errs=0
+p2rec-after-spawn-915x412 calls=676 tris=1951030 geoms=379 tex=25 progs=39 inst=237 buckets=null luma=0.289 errs=0
+p2rec-after-spawn-desktop calls=603 tris=1868822 geoms=329 tex=25 progs=38 inst=237 buckets=null luma=0.3308 errs=0
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browser.newContext: Protocol error (Browser.setDownloadBehavior): Failed to find browser context for id F452FD6CBB68CADE9D756FEB7ECC7E9C
+    at async file:///home/hatch/workspace/voxbox-amberfall/xandria-studio/tools/capture.mjs:92:17 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.22.1

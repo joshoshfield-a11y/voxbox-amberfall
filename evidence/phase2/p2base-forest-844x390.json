@@ -1,0 +1,66 @@
+{
+  "view": "forest",
+  "config": "844x390",
+  "tag": "p2base",
+  "samples": 8,
+  "medians": {
+    "calls": 676,
+    "triangles": 3223582,
+    "geometries": 377,
+    "textures": 25,
+    "programs": 39,
+    "instancedMeshes": 237,
+    "instances": 219267,
+    "populatedMeshes": 235,
+    "visibleInstancedMeshes": 237,
+    "buckets": null,
+    "specEnv": "forest",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      670,
+      676
+    ],
+    "triangles": [
+      3103582,
+      3223582
+    ],
+    "geometries": [
+      371,
+      377
+    ],
+    "textures": [
+      25,
+      25
+    ],
+    "programs": [
+      39,
+      39
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      219267,
+      219267
+    ],
+    "populatedMeshes": [
+      235,
+      235
+    ],
+    "visibleInstancedMeshes": [
+      237,
+      237
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.2605,
+  "consoleErrors": []
+}

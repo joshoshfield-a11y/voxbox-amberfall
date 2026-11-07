@@ -1,0 +1,149 @@
+[
+  {
+    "config": "844x390",
+    "elements": 29,
+    "overlaps": [],
+    "titleGate": null,
+    "consoleErrors": []
+  },
+  {
+    "config": "desktop",
+    "elements": 29,
+    "overlaps": [],
+    "titleGate": null,
+    "consoleErrors": []
+  },
+  {
+    "config": "1600x720-touch",
+    "elements": 30,
+    "overlaps": [
+      {
+        "a": "div#.toast",
+        "b": "div#.tutprompt",
+        "area": 3784
+      }
+    ],
+    "titleGate": null,
+    "consoleErrors": []
+  },
+  {
+    "config": "1600x720-title",
+    "elements": 9,
+    "overlaps": [],
+    "titleGate": {
+      "titleVisible": true,
+      "titleModeClass": true,
+      "chipsVisible": [],
+      "slotRowCount": 5
+    },
+    "consoleErrors": []
+  },
+  {
+    "config": "portrait-touch",
+    "elements": 35,
+    "overlaps": [
+      {
+        "a": "div#.panel bars",
+        "b": "div#.tbtn",
+        "area": 3456
+      },
+      {
+        "a": "div#.barlabel",
+        "b": "div#.tbtn",
+        "area": 960
+      },
+      {
+        "a": "div#.bar hp",
+        "b": "div#.tbtn",
+        "area": 896
+      },
+      {
+        "a": "div#.panel score",
+        "b": "button#xandria-skills-chip.",
+        "area": 2317
+      },
+      {
+        "a": "div#.panel score",
+        "b": "button#xandria-companions-chip.",
+        "area": 2317
+      },
+      {
+        "a": "div#.panel score",
+        "b": "button#xandria-bestiary-chip.",
+        "area": 2317
+      },
+      {
+        "a": "div#.panel score",
+        "b": "button#xandria-mounts-chip.",
+        "area": 2317
+      },
+      {
+        "a": "div#.toast",
+        "b": "button#xandria-companions-chip.",
+        "area": 186
+      },
+      {
+        "a": "div#.hint",
+        "b": "div#.tbtn",
+        "area": 3107
+      },
+      {
+        "a": "div#.hint",
+        "b": "div#.tbtn",
+        "area": 3420
+      },
+      {
+        "a": "div#.tutcard",
+        "b": "div#.tbtn",
+        "area": 1517
+      },
+      {
+        "a": "div#.tutcard",
+        "b": "div#.tbtn",
+        "area": 3264
+      },
+      {
+        "a": "div#.tutprompt",
+        "b": "div#.tbtn",
+        "area": 140
+      },
+      {
+        "a": "div#.tutprompt",
+        "b": "div#.tbtn",
+        "area": 204
+      },
+      {
+        "a": "div#.tutprompt",
+        "b": "div#.tbtn",
+        "area": 2720
+      },
+      {
+        "a": "button#xandria-timed-board-chip.",
+        "b": "button#xandria-world-atlas-chip.",
+        "area": 1848
+      },
+      {
+        "a": "button#xandria-companions-chip.",
+        "b": "button#xandria-achievements-chip.",
+        "area": 176
+      },
+      {
+        "a": "button#xandria-achievements-chip.",
+        "b": "button#xandria-bestiary-chip.",
+        "area": 1452
+      },
+      {
+        "a": "button#xandria-achievements-chip.",
+        "b": "button#xandria-mounts-chip.",
+        "area": 1452
+      },
+      {
+        "a": "button#xandria-bestiary-chip.",
+        "b": "button#xandria-mounts-chip.",
+        "area": 2407
+      }
+    ],
+    "titleGate": null,
+    "consoleErrors": []
+  }
+]

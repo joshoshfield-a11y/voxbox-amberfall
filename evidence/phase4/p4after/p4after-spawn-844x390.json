@@ -1,0 +1,66 @@
+{
+  "view": "spawn",
+  "config": "844x390",
+  "tag": "p4after",
+  "samples": 8,
+  "medians": {
+    "calls": 676,
+    "triangles": 1951030,
+    "geometries": 379,
+    "textures": 25,
+    "programs": 39,
+    "instancedMeshes": 237,
+    "instances": 182019,
+    "populatedMeshes": 233,
+    "visibleInstancedMeshes": 235,
+    "buckets": null,
+    "specEnv": "ruins",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      670,
+      676
+    ],
+    "triangles": [
+      1831030,
+      1951030
+    ],
+    "geometries": [
+      373,
+      379
+    ],
+    "textures": [
+      25,
+      25
+    ],
+    "programs": [
+      39,
+      39
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      182019,
+      182019
+    ],
+    "populatedMeshes": [
+      233,
+      233
+    ],
+    "visibleInstancedMeshes": [
+      235,
+      235
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.2787,
+  "consoleErrors": []
+}

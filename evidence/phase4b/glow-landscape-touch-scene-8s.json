@@ -1,0 +1,774 @@
+{
+  "playerPos": [
+    0,
+    0.85,
+    0
+  ],
+  "cameraPos": [
+    0,
+    5.21,
+    -7.12
+  ],
+  "sunPos": [
+    111.6,
+    43.8,
+    -82.4
+  ],
+  "specBloom": true,
+  "specEnv": "ruins",
+  "specTod": "dusk",
+  "quality": "standard",
+  "gradeActive": true,
+  "pointLights": [
+    {
+      "color": "#ffffff",
+      "intensity": 0,
+      "distance": 16,
+      "decay": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85,
+      "visible": false
+    },
+    {
+      "color": "#ffffff",
+      "intensity": 0,
+      "distance": 16,
+      "decay": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85,
+      "visible": false
+    },
+    {
+      "color": "#ffffff",
+      "intensity": 0,
+      "distance": 16,
+      "decay": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85,
+      "visible": false
+    },
+    {
+      "color": "#ffb545",
+      "intensity": 30,
+      "distance": 22,
+      "decay": 1.8,
+      "pos": [
+        2328.87,
+        2.29,
+        -563.14
+      ],
+      "distToPlayer": 2395.99,
+      "visible": true
+    }
+  ],
+  "sprites": [],
+  "nearEmissives": [
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.6,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.6,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.6,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb43c",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "PlaneGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 1.8,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffab33",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 1.8,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffd27a",
+      "emissiveIntensity": 2.4,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffd27a",
+      "emissiveIntensity": 1.8,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffd27a",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BufferGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffab33",
+      "emissiveIntensity": 1.8,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "PlaneGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 1.8,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffd23f",
+      "emissiveIntensity": 2.2,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.6,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "BoxGeometry",
+      "emissive": "#ffb545",
+      "emissiveIntensity": 2.4,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    },
+    {
+      "geo": "SphereGeometry",
+      "emissive": "#ff9e2e",
+      "emissiveIntensity": 2.5,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "distToPlayer": 0.85
+    }
+  ],
+  "nearEmissiveCount": 100,
+  "additiveShaderMeshes": [
+    {
+      "pos": [
+        66.51,
+        8.01,
+        69.38
+      ],
+      "distToPlayer": 96.38
+    },
+    {
+      "pos": [
+        -27.32,
+        6.9,
+        -37.55
+      ],
+      "distToPlayer": 46.83
+    },
+    {
+      "pos": [
+        -28.97,
+        7.56,
+        -57.89
+      ],
+      "distToPlayer": 65.09
+    },
+    {
+      "pos": [
+        -7.79,
+        7.94,
+        -3.24
+      ],
+      "distToPlayer": 11.02
+    }
+  ]
+}

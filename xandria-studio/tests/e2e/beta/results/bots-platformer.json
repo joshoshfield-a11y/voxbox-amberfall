@@ -1,0 +1,21 @@
+{
+  "suite": "bots",
+  "name": "platformer",
+  "genre": "platformer",
+  "passed": true,
+  "durationMs": 335136,
+  "metrics": {
+    "frames": 181,
+    "scoreStart": 50,
+    "scoreEnd": 250,
+    "progressStart": 1,
+    "progressEnd": 3,
+    "softlockWindows": 17
+  },
+  "errors": [],
+  "notes": [
+    "baseline frame=6 score=50 progress=1",
+    "reached 180 rendered frames"
+  ],
+  "summary": "errors:0 | score 50→250 | progress 1→3 | softlock 0/17 | nan:0 | frames:181"
+}

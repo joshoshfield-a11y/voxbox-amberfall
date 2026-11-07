@@ -1,0 +1,427 @@
+
+Running 30 tests using 1 worker
+
+  ✓   1 tests/e2e/camp-upgrades.spec.ts:194:1 › camp-upgrades: tiers + panel + anchor travel-identical, desktop 8km (6.6m)
+  ✘   2 tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row (1.5m)
+  ✓   3 tests/e2e/camp-upgrades.spec.ts:426:1 › camp-upgrades: reload preserves tiers + chest + capacity (35.2s)
+  ✘   4 tests/e2e/flow.spec.ts:12:1 › title screen shows premise/controls and starts the run on click (31.2s)
+  ✓   5 tests/e2e/flow.spec.ts:36:1 › ?autostart=1 skips the title screen (18.8s)
+  ✘   6 tests/e2e/flow.spec.ts:43:1 › pause menu state machine: Esc toggles, modal pause is sticky (1.2m)
+  ✘   7 tests/e2e/flow.spec.ts:70:1 › in-place restart rebuilds the run deterministically (56.7s)
+  ✘   8 tests/e2e/flow.spec.ts:116:1 › settings persist across reload (1.6m)
+[hud-polish] z-order: {"layerZ":9650,"dlgZ":9500,"dlgOpen":true}
+[hud-polish] desktop boxes: [{"id":"#xandria-quest-tracker","x":1130,"y":136,"w":134,"h":74},{"id":".xhud .score","x":1194,"y":220,"w":70,"h":146},{"id":".xhud .objective","x":16,"y":16,"w":202,"h":84},{"id":".xhud .bars","x":16,"y":639,"w":270,"h":65},{"id":".xhud .boss","x":470,"y":56,"w":340,"h":33},{"id":".xhud .hint","x":381,"y":675,"w":519,"h":27}]
+[hud-polish] desktop dialogue buttons: [{"t":"I'll help. What needs doing?","w":480,"h":36},{"t":"What's the word around here?","w":480,"h":36},{"t":"You can trust me — ask anyon","w":480,"h":54},{"t":"Not my problem.","w":480,"h":36},{"t":"Accept: Word Travels — Word ","w":480,"h":52},{"t":"Accept: Spare Parts — The ga","w":480,"h":52},{"t":"Accept: Ore Sample — The for","w":480,"h":52},{"t":"Accept: Stockpile — Winter o","w":480,"h":52},{"t":"Accept: Apprentice Work — Ev","w":480,"h":52},{"t":"Accept: Pest Control — They ","w":480,"h":52},{"t":"Accept: Timber Call — The pa","w":480,"h":52},{"t":"Accept: Coast Requisition — ","w":480,"h":52},{"t":"Accept: Commission: Lure Tot","w":480,"h":52},{"t":"Accept: Cull the walkers — T","w":480,"h":52},{"t":"Accept: Rush Order: Coast Su","w":480,"h":52},{"t":"Accept: Rush Commission: Lur","w":480,"h":70},{"t":"Accept: Cull Order: walkers ","w":480,"h":70},{"t":"Goodbye (E)","w":98,"h":33}]
+  ✓   9 tests/e2e/hud-polish.spec.ts:181:1 › hud-polish: z-order + overlap audit + touch targets (desktop 1280x720) (3.2m)
+[hud-polish] touch overlay active: true
+[hud-polish] mobile z-order: {"layerZ":9650,"dlgZ":9500,"dlgOpen":true,"hitIsButton":false}
+  ✘  10 tests/e2e/hud-polish.spec.ts:244:3 › hud-polish mobile › hud-polish: z-order + overlap audit + touch targets (360x780, touch) (37.6s)
+  ✘  11 tests/e2e/playability.spec.ts:27:3 › genre tp-action: boots and plays (25.7s)
+  ✘  12 tests/e2e/playability.spec.ts:27:3 › genre fps-arena: boots and plays (20.9s)
+  ✘  13 tests/e2e/playability.spec.ts:27:3 › genre racing: boots and plays (20.7s)
+  ✘  14 tests/e2e/playability.spec.ts:27:3 › genre platformer: boots and plays (20.9s)
+  ✘  15 tests/e2e/playability.spec.ts:27:3 › genre topdown: boots and plays (22.5s)
+  ✘  16 tests/e2e/playability.spec.ts:27:3 › genre survivor: boots and plays (24.3s)
+  ✘  17 tests/e2e/playability.spec.ts:27:3 › genre tower-defense: boots and plays (23.2s)
+  ✘  18 tests/e2e/playability.spec.ts:27:3 › genre endless-runner: boots and plays (21.5s)
+  ✘  19 tests/e2e/playability.spec.ts:74:3 › genre survivor: boots clean at 360x780 (17.6s)
+  ✘  20 tests/e2e/playability.spec.ts:74:3 › genre tower-defense: boots clean at 360x780 (16.0s)
+  ✘  21 tests/e2e/playability.spec.ts:74:3 › genre endless-runner: boots clean at 360x780 (18.1s)
+  ✘  22 tests/e2e/playability.spec.ts:91:1 › exported standalone HTML boots fully offline (20.3s)
+[quests] line=[{"id":"quest_story_1_word_travels","kinds":["talk"]},{"id":"quest_story_2_first_blood","kinds":["kill"]},{"id":"quest_story_3_the_maker","kinds":["craft"]},{"id":"quest_story_4_the_forager","kinds":["gather"]},{"id":"quest_side_1_rumor_mill","kinds":["talk"]},{"id":"quest_side_2_spare_parts","kinds":["gather"]},{"id":"quest_side_3_ore_sample","kinds":["gather"]},{"id":"quest_side_4_stockpile","kinds":["gather"]},{"id":"quest_side_5_apprentice_work","kinds":["craft"]},{"id":"quest_side_6_pest_control","kinds":["kill"]},{"id":"quest_side_7_timber_call","kinds":["gather"]},{"id":"quest_radiant_0_radiant_fetch","kinds":["gather"]},{"id":"quest_radiant_1_radiant_craft","kinds":["craft"]},{"id":"quest_radiant_2_radiant_hunt","kinds":["kill"]},{"id":"quest_timed_0_timed_fetch","kinds":["gather"]},{"id":"quest_timed_1_timed_craft","kinds":["craft"]},{"id":"quest_timed_2_timed_hunt","kinds":["kill"]}]
+  ✘  23 tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 (1.6m)
+  ✓  24 tests/e2e/quests.spec.ts:486:1 › quests: quest state survives a real portal transition (1.6m)
+  ✓  25 tests/e2e/r4-fixes.spec.ts:81:1 › R4-M1: level-up queues behind the branch-choice modal; quest never freezes (49.5s)
+  ✓  26 tests/e2e/r4-fixes.spec.ts:145:1 › R4-M2: vitality/secondwind apply on the first run (12.8s)
+  ✓  27 tests/e2e/r4-fixes.spec.ts:193:1 › R5-M1: buying vitality/secondwind in the title shop applies on START (40.5s)
+  ✓  28 tests/e2e/r4-fixes.spec.ts:263:1 › R4-N2: intro card shows on fresh run, not on restart (32.8s)
+  ✓  29 tests/e2e/save-export-import.spec.ts:104:1 › save-export-import: export download, import as new slot, malformed rejection — desktop + 360x780 (4.7m)
+  ✘  30 tests/e2e/save-slots.spec.ts:95:1 › save-slots: picker, isolation, rename/delete, migration, perf — desktop + 360x780 (5.1m)
+
+
+  1) tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row 
+
+    Error: waitFor timeout (touch upgrade raises tier) after 30000ms
+
+      51 |   for (;;) {
+      52 |     if (await fn()) return;
+    > 53 |     if (Date.now() - t0 > timeoutMs) throw new Error(`waitFor timeout (${label}) after ${timeoutMs}ms`);
+         |                                            ^
+      54 |     await page.waitForTimeout(200);
+      55 |   }
+      56 | };
+        at waitFor (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/camp-upgrades.spec.ts:53:44)
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/camp-upgrades.spec.ts:402:5
+
+    Error Context: test-results/camp-upgrades-mobile-360x7-1c9a0-upgrade-tap-camp-anchor-row/error-context.md
+
+  2) tests/e2e/flow.spec.ts:12:1 › title screen shows premise/controls and starts the run on click ─
+
+    TimeoutError: page.waitForFunction: Timeout 10000ms exceeded.
+
+      29 |   // (bypasses Playwright's actionability stability check)
+      30 |   await page.evaluate(() => (document.querySelector('.xhud .title-screen .start-btn') as HTMLElement).click());
+    > 31 |   await page.waitForFunction(() => (window as any).__XANDRIA__?.engine?.state === 'playing', null, { timeout: 10000 });
+         |              ^
+      32 |   const gone = await page.evaluate(() => !document.querySelector('.xhud .title-screen'));
+      33 |   expect(gone).toBe(true);
+      34 | });
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/flow.spec.ts:31:14
+
+    Error Context: test-results/flow-title-screen-shows-pr-8c98e-and-starts-the-run-on-click/error-context.md
+
+  3) tests/e2e/flow.spec.ts:43:1 › pause menu state machine: Esc toggles, modal pause is sticky ────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+      Array [
+        "RESUME",
+    +   "CUSTOMIZE",
+        "RESTART",
+        "SETTINGS",
+        "QUIT TO TITLE",
+      ]
+
+      50 |     [...document.querySelectorAll('.xhud .overlay button')].map((b) => b.textContent),
+      51 |   );
+    > 52 |   expect(buttons).toEqual(['RESUME', 'RESTART', 'SETTINGS', 'QUIT TO TITLE']);
+         |                   ^
+      53 |
+      54 |   // Esc resumes from a menu pause
+      55 |   await page.keyboard.press('Escape');
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/flow.spec.ts:52:19
+
+    Error Context: test-results/flow-pause-menu-state-mach-811d7-ggles-modal-pause-is-sticky/error-context.md
+
+  4) tests/e2e/flow.spec.ts:70:1 › in-place restart rebuilds the run deterministically ─────────────
+
+    TimeoutError: page.waitForFunction: Timeout 30000ms exceeded.
+
+      94 |   await page.evaluate(() => (window as any).__XANDRIA__.engine.restart());
+      95 |   // replay the same number of sim frames the first run had elapsed
+    > 96 |   await page.waitForFunction(
+         |              ^
+      97 |     (f: number) => {
+      98 |       const e = (window as any).__XANDRIA__.engine;
+      99 |       return e.frame >= f && e.state === 'playing';
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/flow.spec.ts:96:14
+
+    Error Context: test-results/flow-in-place-restart-rebuilds-the-run-deterministically/error-context.md
+
+  5) tests/e2e/flow.spec.ts:116:1 › settings persist across reload ─────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 90000ms exceeded.
+
+      121 |   });
+      122 |   await page.reload({ waitUntil: 'load' });
+    > 123 |   await page.waitForFunction(() => (window as any).__XANDRIA__?.engine, null, { timeout: 30000 });
+          |              ^
+      124 |   const s = await page.evaluate(() => (window as any).__XANDRIA__.engine.settings.data);
+      125 |   expect(s.volume).toBeCloseTo(0.33);
+      126 |   expect(s.muted).toBe(true);
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/flow.spec.ts:123:14
+
+    Error Context: test-results/flow-settings-persist-across-reload/error-context.md
+
+  6) tests/e2e/hud-polish.spec.ts:244:3 › hud-polish mobile › hud-polish: z-order + overlap audit + touch targets (360x780, touch) 
+
+    Error: elementFromPoint at the button center hits the button
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      277 |     expect(z.dlgOpen, 'dialogue still open under the modal').toBe(true);
+      278 |     expect(z.layerZ, 'modal layer above the dialogue panel').toBeGreaterThan(z.dlgZ);
+    > 279 |     expect(z.hitIsButton, 'elementFromPoint at the button center hits the button').toBe(true);
+          |                                                                                    ^
+      280 |     await page.locator('.xhud-modals .overlay .lvlopt').first().click();
+      281 |     await page.waitForFunction(() => (window as any).__lvlId !== null, null, { timeout: 15_000 });
+      282 |     expect(await page.evaluate(() => (window as any).__lvlId), 'pick resolves').toBe('u_a');
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/hud-polish.spec.ts:279:84
+
+    Error Context: test-results/hud-polish-hud-polish-mobi-fe9f5-ouch-targets-360x780-touch-/error-context.md
+
+  7) tests/e2e/playability.spec.ts:27:3 › genre tp-action: boots and plays ─────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      61 |     });
+      62 |     expect(moved.frames).toBeGreaterThanOrEqual(4); // SwiftShader renders ~3fps; sim substeps carry the load
+    > 63 |     expect(moved.moved).toBe(true);
+         |                         ^
+      64 |
+      65 |     await page.screenshot({ path: `tests/e2e/shots/${g.name}.png` });
+      66 |
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:63:25
+
+    Error Context: test-results/playability-genre-tp-action-boots-and-plays/error-context.md
+
+  8) tests/e2e/playability.spec.ts:27:3 › genre fps-arena: boots and plays ─────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "fps-arena"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-fps-arena-boots-and-plays/error-context.md
+
+  9) tests/e2e/playability.spec.ts:27:3 › genre racing: boots and plays ────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "racing"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-racing-boots-and-plays/error-context.md
+
+  10) tests/e2e/playability.spec.ts:27:3 › genre platformer: boots and plays ───────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "platformer"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-platformer-boots-and-plays/error-context.md
+
+  11) tests/e2e/playability.spec.ts:27:3 › genre topdown: boots and plays ──────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "top-down-shooter"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-topdown-boots-and-plays/error-context.md
+
+  12) tests/e2e/playability.spec.ts:27:3 › genre survivor: boots and plays ─────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "survivor"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-survivor-boots-and-plays/error-context.md
+
+  13) tests/e2e/playability.spec.ts:27:3 › genre tower-defense: boots and plays ────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "tower-defense"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-tower-defense-boots-and-plays/error-context.md
+
+  14) tests/e2e/playability.spec.ts:27:3 › genre endless-runner: boots and plays ───────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "endless-runner"
+    Received: "third-person-action"
+
+      39 |       };
+      40 |     });
+    > 41 |     expect(state.genre).toBe(g.expect);
+         |                         ^
+      42 |     expect(state.errors).toBe(0);
+      43 |
+      44 |     // inject forward input for ~2 sim-seconds
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:41:25
+
+    Error Context: test-results/playability-genre-endless-runner-boots-and-plays/error-context.md
+
+  15) tests/e2e/playability.spec.ts:74:3 › genre survivor: boots clean at 360x780 ──────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "survivor"
+    Received: "third-person-action"
+
+      80 |     await page.waitForFunction(() => (window as any).__XANDRIA__?.engine?.state === 'playing', null, { timeout: 30000 });
+      81 |     const genre = await page.evaluate(() => (window as any).__XANDRIA__.spec.meta.genre);
+    > 82 |     expect(genre).toBe(g.expect);
+         |                   ^
+      83 |     await page.waitForTimeout(3000); // let the sim tick on the small viewport
+      84 |     const errs = await page.evaluate(() => (window as any).__XANDRIA_ERRORS);
+      85 |     expect(errs).toEqual([]);
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:82:19
+
+    Error Context: test-results/playability-genre-survivor-boots-clean-at-360x780/error-context.md
+
+  16) tests/e2e/playability.spec.ts:74:3 › genre tower-defense: boots clean at 360x780 ─────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "tower-defense"
+    Received: "third-person-action"
+
+      80 |     await page.waitForFunction(() => (window as any).__XANDRIA__?.engine?.state === 'playing', null, { timeout: 30000 });
+      81 |     const genre = await page.evaluate(() => (window as any).__XANDRIA__.spec.meta.genre);
+    > 82 |     expect(genre).toBe(g.expect);
+         |                   ^
+      83 |     await page.waitForTimeout(3000); // let the sim tick on the small viewport
+      84 |     const errs = await page.evaluate(() => (window as any).__XANDRIA_ERRORS);
+      85 |     expect(errs).toEqual([]);
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:82:19
+
+    Error Context: test-results/playability-genre-tower-defense-boots-clean-at-360x780/error-context.md
+
+  17) tests/e2e/playability.spec.ts:74:3 › genre endless-runner: boots clean at 360x780 ────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "endless-runner"
+    Received: "third-person-action"
+
+      80 |     await page.waitForFunction(() => (window as any).__XANDRIA__?.engine?.state === 'playing', null, { timeout: 30000 });
+      81 |     const genre = await page.evaluate(() => (window as any).__XANDRIA__.spec.meta.genre);
+    > 82 |     expect(genre).toBe(g.expect);
+         |                   ^
+      83 |     await page.waitForTimeout(3000); // let the sim tick on the small viewport
+      84 |     const errs = await page.evaluate(() => (window as any).__XANDRIA_ERRORS);
+      85 |     expect(errs).toEqual([]);
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:82:19
+
+    Error Context: test-results/playability-genre-endless-runner-boots-clean-at-360x780/error-context.md
+
+  18) tests/e2e/playability.spec.ts:91:1 › exported standalone HTML boots fully offline ────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "fps-arena"
+    Received: "third-person-action"
+
+      115 |   await page.waitForFunction(() => (window as any).__XANDRIA__?.engine?.state === 'playing', null, { timeout: 30000 });
+      116 |   const genre = await page.evaluate(() => (window as any).__XANDRIA__.spec.meta.genre);
+    > 117 |   expect(genre).toBe('fps-arena');
+          |                 ^
+      118 |   const captured = await page.evaluate(() => (window as any).__XANDRIA_ERRORS ?? []);
+      119 |   expect([...captured, ...errors]).toEqual([]);
+      120 |   await ctx.close();
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/playability.spec.ts:117:17
+
+    Error Context: test-results/playability-exported-standalone-HTML-boots-fully-offline/error-context.md
+
+  19) tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 
+
+    Error: waitFor timeout (dialogue opens) after 30000ms
+
+      62 |     for (;;) {
+      63 |       if (await fn()) return;
+    > 64 |       if (Date.now() - t0 > timeoutMs) throw new Error(`waitFor timeout (${label}) after ${timeoutMs}ms`);
+         |                                              ^
+      65 |       await page.waitForTimeout(2000);
+      66 |     }
+      67 |   };
+        at waitFor (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:64:46)
+        at openVillagerDialogue (/home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:205:7)
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/quests.spec.ts:242:17
+
+    Error Context: test-results/quests-quests-story-line-a-4dd66-te---reward-desktop-360x780/error-context.md
+
+  20) tests/e2e/save-slots.spec.ts:95:1 › save-slots: picker, isolation, rename/delete, migration, perf — desktop + 360x780 
+
+    Test timeout of 300000ms exceeded.
+
+    Error: page.reload: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+      - waiting for navigation until "domcontentloaded"
+
+
+      199 |   // ---- mobile leg: 360x780 ----
+      200 |   await page.setViewportSize({ width: 360, height: 780 });
+    > 201 |   await page.reload({ waitUntil: 'domcontentloaded' });
+          |              ^
+      202 |   await waitTitle(page);
+      203 |   const pickerBox = await page.locator('.title-screen .slots').boundingBox();
+      204 |   expect(pickerBox).not.toBeNull();
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/save-slots.spec.ts:201:14
+
+    Error Context: test-results/save-slots-save-slots-pick-81fbc-tion-perf-—-desktop-360x780/error-context.md
+
+  Slow test file: tests/e2e/save-slots.spec.ts (5.1m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  20 failed
+    tests/e2e/camp-upgrades.spec.ts:379:3 › mobile 360x780 › camp-upgrades: panel tier indicator + upgrade tap + camp anchor row 
+    tests/e2e/flow.spec.ts:12:1 › title screen shows premise/controls and starts the run on click ──
+    tests/e2e/flow.spec.ts:43:1 › pause menu state machine: Esc toggles, modal pause is sticky ─────
+    tests/e2e/flow.spec.ts:70:1 › in-place restart rebuilds the run deterministically ──────────────
+    tests/e2e/flow.spec.ts:116:1 › settings persist across reload ──────────────────────────────────
+    tests/e2e/hud-polish.spec.ts:244:3 › hud-polish mobile › hud-polish: z-order + overlap audit + touch targets (360x780, touch) 
+    tests/e2e/playability.spec.ts:27:3 › genre tp-action: boots and plays ──────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre fps-arena: boots and plays ──────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre racing: boots and plays ─────────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre platformer: boots and plays ─────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre topdown: boots and plays ────────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre survivor: boots and plays ───────────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre tower-defense: boots and plays ──────────────────────
+    tests/e2e/playability.spec.ts:27:3 › genre endless-runner: boots and plays ─────────────────────
+    tests/e2e/playability.spec.ts:74:3 › genre survivor: boots clean at 360x780 ────────────────────
+    tests/e2e/playability.spec.ts:74:3 › genre tower-defense: boots clean at 360x780 ───────────────
+    tests/e2e/playability.spec.ts:74:3 › genre endless-runner: boots clean at 360x780 ──────────────
+    tests/e2e/playability.spec.ts:91:1 › exported standalone HTML boots fully offline ──────────────
+    tests/e2e/quests.spec.ts:52:1 › quests: story line accept -> progress -> complete -> reward, desktop + 360x780 
+    tests/e2e/save-slots.spec.ts:95:1 › save-slots: picker, isolation, rename/delete, migration, perf — desktop + 360x780 
+  10 passed (45.8m)

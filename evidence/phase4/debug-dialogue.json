@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "round": 0,
+      "vid": "npc-eb3bdb13-0",
+      "promptSecs": 38,
+      "promptId": "npc-afaa2a86-10",
+      "modalBefore": null,
+      "dialogue": "STALL"
+    },
+    {
+      "round": 1,
+      "vid": "npc-496251d8-1",
+      "promptSecs": 9,
+      "promptId": "npc-496251d8-1",
+      "modalBefore": null,
+      "dialogue": "STALL"
+    }
+  ],
+  "errors": []
+}

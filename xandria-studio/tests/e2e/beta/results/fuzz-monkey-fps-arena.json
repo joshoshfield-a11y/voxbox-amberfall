@@ -1,0 +1,13 @@
+{
+  "suite": "fuzz",
+  "name": "input-monkey",
+  "genre": "fps-arena",
+  "passed": true,
+  "durationMs": 63701,
+  "metrics": {
+    "injections": 186,
+    "nanFindings": 0
+  },
+  "errors": [],
+  "notes": "mulberry32 seed=1001; ~300ms cadence for 60s; 'pause'/'reset' excluded from the action pool (pause stalls the sim, reset rebuilds the run); frame 8 -> 97 (advancing=true); nanScan paths: none."
+}

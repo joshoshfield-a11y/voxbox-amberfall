@@ -1,0 +1,66 @@
+{
+  "view": "forest",
+  "config": "915x412",
+  "tag": "before",
+  "samples": 8,
+  "medians": {
+    "calls": 676,
+    "triangles": 3045022,
+    "geometries": 377,
+    "textures": 25,
+    "programs": 39,
+    "instancedMeshes": 237,
+    "instances": 174627,
+    "populatedMeshes": 235,
+    "visibleInstancedMeshes": 237,
+    "buckets": null,
+    "specEnv": "forest",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      670,
+      676
+    ],
+    "triangles": [
+      2925022,
+      3045022
+    ],
+    "geometries": [
+      371,
+      377
+    ],
+    "textures": [
+      25,
+      25
+    ],
+    "programs": [
+      39,
+      39
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      174627,
+      174627
+    ],
+    "populatedMeshes": [
+      235,
+      235
+    ],
+    "visibleInstancedMeshes": [
+      237,
+      237
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.1855,
+  "consoleErrors": []
+}

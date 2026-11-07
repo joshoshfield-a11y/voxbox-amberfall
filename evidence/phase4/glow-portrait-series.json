@@ -1,0 +1,42 @@
+{
+  "series": [
+    {
+      "t": "0s",
+      "fullLuma": 0.3032,
+      "centerLuma": 0.3396,
+      "centerBlowout": 0.0001,
+      "state": "playing",
+      "frame": 18
+    },
+    {
+      "t": "1s",
+      "fullLuma": 0.2981,
+      "centerLuma": 0.3011,
+      "centerBlowout": 0.0001,
+      "state": "playing",
+      "frame": 39
+    },
+    {
+      "t": "3s",
+      "fullLuma": 0.2981,
+      "centerLuma": 0.3014,
+      "centerBlowout": 0.0001,
+      "state": "playing",
+      "frame": 63
+    },
+    {
+      "t": "8s",
+      "fullLuma": 0.2981,
+      "centerLuma": 0.301,
+      "centerBlowout": 0.0001,
+      "state": "playing",
+      "frame": 88
+    }
+  ],
+  "errors": [],
+  "promptBefore": {
+    "display": "flex",
+    "flex": "column"
+  },
+  "promptAfter": "none"
+}

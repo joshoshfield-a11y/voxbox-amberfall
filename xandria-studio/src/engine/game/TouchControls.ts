@@ -1,0 +1,895 @@
+/**
+ * TouchControls — DOM-overlay touch UI for touch devices (phones/tablets).
+ *
+ * Detects touch hardware and, only then, renders virtual controls over the
+ * canvas: a floating-origin left stick (move / steer), an optional right stick
+ * (twin-stick aim, FPS look-drag, or VoxBox third-person look-stick),
+ * per-genre action buttons, and a pause button. All state is translated into the same `Input`
+ * abstraction the keyboard/mouse path uses (actions + axes + look deltas), so
+ * blueprints need zero changes.
+ *
+ * Desktop behavior is completely unaffected: on non-touch devices the class
+ * builds no DOM and every method is a no-op.
+ */
+import type { Action, Input } from '../core/Input';
+
+/** True on real touch hardware. Safe to call in node (returns false). */
+export function isTouchDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  if ('ontouchstart' in window) return true;
+  return typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0;
+}
+
+/**
+ * Pure stick math: pixel displacement from the stick origin → normalized,
+ * clamped unit vector. Screen-space: x right+, y down+ (matches Input axes
+ * convention where ly is down+).
+ */
+export function stickVector(dx: number, dy: number, radius: number): { x: number; y: number } {
+  if (radius <= 0) return { x: 0, y: 0 };
+  const len = Math.hypot(dx, dy);
+  const c = len > radius ? radius / len : 1;
+  return { x: (dx * c) / radius, y: (dy * c) / radius };
+}
+
+export type MoveMode = 'stick' | 'steer' | 'dpad';
+export type AimMode = 'look' | 'rstick' | 'lookstick' | null;
+
+/**
+ * VoxBox touch view control: right-stick look deltas for the third-person
+ * camera. Input is the stick's normalized unit vector (see stickVector);
+ * output is pixels of `Input.look` per pointermove event, on the exact path
+ * the FPS look zone and the mouse already feed (Cameras.ts consumes
+ * input.look.x/y every frame, Input.endFrame() zeroes it).
+ * - Inside the dead zone: no camera motion (small thumb tremor ignored).
+ * - Beyond it: deflection rescaled so the dead-zone edge is 0 and full
+ *   deflection is LOOKSTICK_RATE, so the turn rate ramps smoothly.
+ * Pure — unit-tested. At full deflection and ~60 move events/s this is
+ * ~840 look-px/s ≈ 2.2 rad/s yaw, in line with the 2x FPS drag rate.
+ */
+export const LOOKSTICK_DEADZONE = 0.18;
+export const LOOKSTICK_RATE = 14;
+export function lookStickDelta(vx: number, vy: number): { x: number; y: number } {
+  const mag = Math.hypot(vx, vy);
+  if (mag <= LOOKSTICK_DEADZONE) return { x: 0, y: 0 };
+  const s = ((mag - LOOKSTICK_DEADZONE) / (1 - LOOKSTICK_DEADZONE)) * LOOKSTICK_RATE;
+  return { x: (vx / mag) * s, y: (vy / mag) * s };
+}
+
+export interface TouchButtonDef {
+  label: string;
+  action: Action;
+  /** 'hold' keeps the action down while pressed; 'tap' fires a single edge. */
+  kind: 'hold' | 'tap';
+  /** px from the right edge */
+  right: number;
+  /** px from the bottom edge */
+  bottom: number;
+  /** diameter px */
+  size: number;
+}
+
+export interface TouchLayout {
+  move: MoveMode;
+  aim: AimMode;
+  /** racing: hold 'forward' while playing so gas is automatic */
+  autoForward: boolean;
+  buttons: TouchButtonDef[];
+}
+
+/**
+ * Per-genre control scheme. Pure function — unit-tested.
+ *
+ * - fps-arena: left stick move, drag right half to look (replaces pointer lock),
+ *   FIRE + JUMP buttons.
+ * - third-person-action: left stick move, right stick look (lookstick),
+ *   ATK / DASH / JUMP buttons.
+ * - top-down-shooter: twin sticks — left move, right aim + auto-fire while deflected.
+ * - racing: left stick steers (X only), gas auto-on, BRAKE + BOOST buttons.
+ * - platformer: LEFT/RIGHT d-pad + JUMP button.
+ */
+/**
+ * COMBAT-ABILITIES: touch buttons for the three abilities, appended to the
+ * combat genres' layouts (all other genres keep their layout untouched).
+ * Geometry (verified against every base layout above, 360x780):
+ *  - default row bottom:200, size 56: clears the tallest base cluster
+ *    (ATK/FIRE bottom 96 + size 88 -> top edge 184; gap 16px).
+ *  - top-down-shooter / survivor carry a DASH button at bottom 216 + size
+ *    60 (top edge 276), so their ability row sits at bottom:292 (gap 16px).
+ *  - third-person-action carries a DEPLOY button at bottom 190 + size 60
+ *    (top edge 250, added by the deployables wave after this row was first
+ *    laid out), so its ability row sits at bottom:268 (gap 18px).
+ *  - rights 24/92/160: the row spans the right edge without touching the
+ *    left stick zone (left 45%) or the pause button (top-right).
+ *  All three are >= 28px (56px) per the hud-polish touch-target rule.
+ */
+export function abilityTouchButtons(genre: string): TouchButtonDef[] {
+  const bottom = genre === 'top-down-shooter' || genre === 'survivor' ? 292
+    : genre === 'third-person-action' ? 268 : 200;
+  return [
+    { label: 'STRIKE', action: 'ability1', kind: 'tap', right: 24, bottom, size: 56 },
+    { label: 'WAVE', action: 'ability2', kind: 'tap', right: 92, bottom, size: 56 },
+    { label: 'MEND', action: 'ability3', kind: 'tap', right: 160, bottom, size: 56 },
+  ];
+}
+
+const ABILITY_TOUCH_GENRES = new Set([
+  'fps-arena', 'third-person-action', 'platformer', 'top-down-shooter', 'survivor',
+]);
+
+/**
+ * LANDSCAPE-FIRST (VoxBox): short-screen compaction for the touch
+ * button cluster. The portrait bottoms (SNEAK bottom:336 + size 60,
+ * ability row bottom:268 + size 56) were laid out for 780px-tall
+ * portrait screens; on a 390px-tall landscape phone SNEAK renders at
+ * y=-6 (clipped off the top) and the ability row lands on the score
+ * panel. Below 520px viewport height the third-person-action cluster
+ * is re-stacked by TOP (so both 390 and 412 share the same tops and
+ * the taller screen just gains bottom margin):
+ *
+ *   row B, top 280, size 44: SNEAK (right 280, moved out of the
+ *     STRIKE column) · DEPLOY (208) · MEND (160) · WAVE (92) ·
+ *     STRIKE (24) — clears the tracker band (top 166 + compacted
+ *     names-only tracker, bottom ≤ ~274) and the tutorial card
+ *     (top 140, bottom ~250).
+ *   row A, top 330/332: ATK (size 52, top 330) · DASH / JUMP
+ *     (size 48, top 332) — clears row B by 6-8px and the bottom-left
+ *     chip row (top ~330) by x-separation.
+ * All sizes stay >= 44px (above the 28px touch-target floor). Unknown
+ * labels pass through untouched, and heights >= 520px return the
+ * input unchanged — the portrait layout is never re-derived, only
+ * re-stacked for short landscape screens. Pure — unit-tested.
+ */
+export function compactTouchButtons(buttons: TouchButtonDef[], viewportHeight: number): TouchButtonDef[] {
+  if (viewportHeight >= 520) return buttons;
+  const top = (label: string, size: number, topPx: number): TouchButtonDef | null => {
+    const b = buttons.find((x) => x.label === label);
+    if (!b) return null;
+    return { ...b, size, bottom: viewportHeight - topPx - size };
+  };
+  const out = buttons.map((b) => {
+    switch (b.label) {
+      case 'ATK': return top('ATK', 52, 330)!;
+      case 'DASH': return top('DASH', 48, 332)!;
+      case 'JUMP': return top('JUMP', 48, 332)!;
+      case 'DEPLOY': return top('DEPLOY', 44, 280)!;
+      case 'STRIKE': return top('STRIKE', 44, 280)!;
+      case 'WAVE': return top('WAVE', 44, 280)!;
+      case 'MEND': return top('MEND', 44, 280)!;
+      case 'SNEAK': {
+        const s = top('SNEAK', 44, 280)!;
+        return { ...s, right: 280 };
+      }
+      default: return b;
+    }
+  });
+  return out;
+}
+
+/**
+ * FIX2 (D-039): touch-landscape COMPACT layout for taller landscape
+ * viewports (height >= 520, e.g. the 1600x720 moto g play report). Below
+ * 520px compactTouchButtons owns the cluster; at >= 520px it returns the
+ * portrait defs unchanged, and at 720px tall those defs spread eight
+ * large buttons (ATK 88px, others 56-64px) down the right side under the
+ * full panels. This re-stacks the third-person-action cluster into two
+ * tight rows anchored to the bottom-right:
+ *   row A, bottom 16: ATK (size 64, right 16) · DASH (56, right 88) ·
+ *     JUMP (56, right 152).
+ *   row B, bottom 88: STRIKE (52, right 16) · WAVE (52, right 76) ·
+ *     MEND (52, right 136) · DEPLOY (52, right 196) · SNEAK (52, right 256).
+ * Row B's left edge sits 308px from the right edge, so at 1600px wide it
+ * ends at x1292 — clear of the bottom-centre INTEGRITY bar (220px wide,
+ * centred, ends x910) and of the bottom-left MENU row. All sizes stay
+ * >= 44px (above the 28px touch-target floor). Landscape-only
+ * (width > height) and height >= 520; anything else returns the input
+ * unchanged. Unknown labels pass through untouched. Pure — unit-tested.
+ */
+export function compactTouchButtonsLandscape(buttons: TouchButtonDef[], viewportWidth: number, viewportHeight: number): TouchButtonDef[] {
+  if (viewportWidth <= viewportHeight || viewportHeight < 520) return buttons;
+  const place = (label: string, size: number, right: number, bottom: number): TouchButtonDef | null => {
+    const b = buttons.find((x) => x.label === label);
+    if (!b) return null;
+    return { ...b, size, right, bottom };
+  };
+  return buttons.map((b) => {
+    switch (b.label) {
+      case 'ATK': return place('ATK', 64, 16, 16)!;
+      case 'DASH': return place('DASH', 56, 88, 16)!;
+      case 'JUMP': return place('JUMP', 56, 152, 16)!;
+      case 'STRIKE': return place('STRIKE', 52, 16, 88)!;
+      case 'WAVE': return place('WAVE', 52, 76, 88)!;
+      case 'MEND': return place('MEND', 52, 136, 88)!;
+      case 'DEPLOY': return place('DEPLOY', 52, 196, 88)!;
+      case 'SNEAK': return place('SNEAK', 52, 256, 88)!;
+      default: return b;
+    }
+  });
+}
+
+export function layoutForGenre(genre: string): TouchLayout {
+  const base = layoutForGenreBase(genre);
+  if (!ABILITY_TOUCH_GENRES.has(genre)) return base;
+  return { ...base, buttons: [...base.buttons, ...abilityTouchButtons(genre)] };
+}
+
+function layoutForGenreBase(genre: string): TouchLayout {
+  switch (genre) {
+    case 'fps-arena':
+      return {
+        move: 'stick', aim: 'look', autoForward: false,
+        buttons: [
+          { label: 'FIRE', action: 'attack', kind: 'hold', right: 24, bottom: 96, size: 88 },
+          { label: 'JUMP', action: 'jump', kind: 'tap', right: 128, bottom: 44, size: 64 },
+        ],
+      };
+    case 'third-person-action':
+      return {
+        // VoxBox touch view control: floating-origin right stick feeding
+        // Input.look (same path as the mouse / FPS look zone) so the
+        // third-person camera can be turned on touch. The stick zone is
+        // built BEFORE the buttons, so the buttons (later siblings) sit
+        // on top of it: a touch starting on ATK/DASH/JUMP/DEPLOY/SNEAK
+        // or an ability button hits the button, never the stick.
+        move: 'stick', aim: 'lookstick', autoForward: false,
+        buttons: [
+          { label: 'ATK', action: 'attack', kind: 'hold', right: 24, bottom: 96, size: 88 },
+          { label: 'DASH', action: 'dash', kind: 'tap', right: 128, bottom: 44, size: 64 },
+          { label: 'JUMP', action: 'jump', kind: 'tap', right: 208, bottom: 100, size: 64 },
+          // UPGRADE LOOP (deployables): field-item deploy (G / Digit3 on desktop)
+          { label: 'DEPLOY', action: 'deploy', kind: 'tap', right: 208, bottom: 190, size: 60 },
+          // UPGRADE LOOP (stealth-system): hold-to-sneak (Ctrl on
+          // desktop). Stacked above the ability row (top edge 324):
+          // bottom 336 + size 56 clears it by 12px; right 24 aligns
+          // with STRIKE below. Hold kind: released on pointerup.
+          { label: 'SNEAK', action: 'sneak', kind: 'hold', right: 24, bottom: 336, size: 56 },
+        ],
+      };
+    case 'top-down-shooter':
+      return {
+        move: 'stick', aim: 'rstick', autoForward: false,
+        buttons: [
+          { label: 'DASH', action: 'dash', kind: 'tap', right: 24, bottom: 216, size: 60 },
+        ],
+      };
+    case 'racing':
+      return {
+        move: 'steer', aim: null, autoForward: true,
+        buttons: [
+          { label: 'BOOST', action: 'boost', kind: 'hold', right: 24, bottom: 96, size: 88 },
+          { label: 'BRAKE', action: 'brake', kind: 'hold', right: 128, bottom: 44, size: 64 },
+          // N3: desktop has R — a beached-but-upright car was unrecoverable on touch
+          { label: 'RESET', action: 'reset', kind: 'tap', right: 208, bottom: 100, size: 64 },
+        ],
+      };
+    case 'platformer':
+      return {
+        move: 'dpad', aim: null, autoForward: false,
+        buttons: [
+          { label: 'JUMP', action: 'jump', kind: 'tap', right: 24, bottom: 96, size: 88 },
+        ],
+      };
+    case 'survivor':
+      return {
+        move: 'stick', aim: 'rstick', autoForward: false,
+        buttons: [
+          { label: 'DASH', action: 'dash', kind: 'tap', right: 24, bottom: 216, size: 60 },
+        ],
+      };
+    case 'tower-defense':
+      return {
+        move: 'stick', aim: null, autoForward: false,
+        buttons: [
+          { label: 'BUILD', action: 'interact', kind: 'tap', right: 24, bottom: 96, size: 88 },
+          { label: 'DASH', action: 'dash', kind: 'tap', right: 128, bottom: 44, size: 60 },
+        ],
+      };
+    case 'endless-runner':
+      return {
+        move: 'stick', aim: null, autoForward: true,
+        buttons: [
+          { label: 'JUMP', action: 'jump', kind: 'tap', right: 24, bottom: 96, size: 88 },
+          { label: 'DASH', action: 'dash', kind: 'tap', right: 128, bottom: 44, size: 60 },
+        ],
+      };
+    default:
+      return {
+        move: 'stick', aim: null, autoForward: false,
+        buttons: [{ label: 'ACT', action: 'attack', kind: 'hold', right: 24, bottom: 96, size: 88 }],
+      };
+  }
+}
+
+const CSS = `
+.xtouch { position:absolute; inset:0; z-index:5; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+.xtouch.hidden { display:none; }
+.xtouch .zone { position:absolute; touch-action:none; }
+.xtouch .stickbase { position:absolute; width:112px; height:112px; margin:-56px 0 0 -56px; border-radius:50%;
+  background:rgba(120,160,200,.10); border:2px solid rgba(140,180,220,.35); display:none; pointer-events:none; }
+.xtouch .stickknob { position:absolute; left:50%; top:50%; width:52px; height:52px; margin:-26px 0 0 -26px; border-radius:50%;
+  background:rgba(150,190,235,.45); border:2px solid rgba(200,225,255,.6); }
+.xtouch .tbtn { position:absolute; border-radius:50%; border:2px solid rgba(140,180,220,.45);
+  background:rgba(20,30,44,.55); color:#e8ecf1; font-family:'Segoe UI',system-ui,sans-serif; font-weight:700;
+  letter-spacing:.06em; display:flex; align-items:center; justify-content:center; touch-action:none; backdrop-filter:blur(2px); }
+.xtouch .tbtn.held { background:rgba(255,210,63,.45); border-color:#ffd23f; }
+.xtouch .dpad { position:absolute; border-radius:16px; border:2px solid rgba(140,180,220,.45);
+  background:rgba(20,30,44,.55); color:#e8ecf1; font-weight:800; font-size:26px;
+  display:flex; align-items:center; justify-content:center; touch-action:none; font-family:'Segoe UI',system-ui,sans-serif; }
+.xtouch .dpad.held { background:rgba(255,210,63,.45); border-color:#ffd23f; }
+/* R3-T1: the old hard-coded top offset overlapped the HUD score panel on
+   narrow viewports (the panel is 81–101 px tall depending on genre).
+   The CSS value below is now only a FALLBACK — the real offset is computed
+   from the score panel's measured height at layout time (see
+   positionPauseButton()), keeping an 8 px gap below the panel's bottom edge. */
+.xtouch .pausebtn { position:absolute; top:calc(max(12px, env(safe-area-inset-top)) + 96px); right:16px; width:42px; height:42px; border-radius:10px;
+  border:1px solid rgba(140,180,220,.4); background:rgba(20,30,44,.55); color:#e8ecf1; font-size:17px;
+  display:flex; align-items:center; justify-content:center; touch-action:none; }
+/* LANDSCAPE-FIRST (VoxBox): touch-landscape HUD layout, measured at
+   844x390 / 915x412 (see MOBILE-FIRST-REPORT.md). This stylesheet is
+   only injected when touch is active, and the block below only applies
+   in landscape, so desktop play and portrait-under-prompt are
+   untouched. Zone map (844x390, all px, gaps >= 4px):
+   - top strip y10..54: objective (left, to x214) · panel-chip row
+     (centered slots, shifted 30px left of the portrait stack so the
+     board chips fit) · board chips (radiant/timed, top strip, right
+     of the panel row) · pause (JS-placed left of the score panel,
+     score x762..832) — the old top-right stack sat ON the score
+     panel (SKILLS y12..45 over score y12..158) and BESTIARY/MOUNTS
+     overlapped each other (tops 52/56); the board chips used to sit
+     at mid-left (top:50% / 50%+28px) ON the factions panel and bars.
+   - y56..86 boss bar (when up) · y86..130 hint (moved off the
+     ability row: it used to sit at bottom:270, i.e. y93..120, under
+     WAVE/MEND) · y140..~250 tutorial card (max-width 300, clears
+     the tracker at x582+ and the ability row at y280+).
+   - left column: objective y12..96 · factions y108..238 (was
+     top:150, overlapping bars y125..190, PHOTO y160..192 and the
+     ATLAS chip) · bars y248..313 · bottom-left chip row y330..374
+     (MAP / ATLAS / MINIMAP / PHOTO).
+   - right column: score y12..158 · tracker y166..~274, names only
+     (.qo lines hidden — full lines return in portrait/desktop) ·
+     button rows y280..324 (row B) and y330..382 (row A).
+   - sneak-state chip moves to bottom:16/left:412 (it used to sit at
+     bottom:118, i.e. on the bars in landscape).
+   Panel chips / standings carry inline styles, so those rules need
+   !important; class-based elements are won on specificity via
+   #app.x-touch (set by Engine when touch is active). */
+@media (orientation: landscape) {
+  #app.x-touch #xandria-skills-chip { left:calc(50% - 200px) !important; right:auto !important; top:10px !important; font-size:11px !important; padding:6px 9px !important; }
+  #app.x-touch #xandria-bestiary-chip { left:calc(50% - 128px) !important; right:auto !important; top:10px !important; font-size:11px !important; padding:6px 9px !important; }
+  #app.x-touch #xandria-mounts-chip { left:calc(50% - 40px) !important; right:auto !important; top:10px !important; font-size:11px !important; padding:6px 9px !important; }
+  #app.x-touch #xandria-companions-chip { left:calc(50% + 42px) !important; right:auto !important; top:10px !important; font-size:11px !important; padding:6px 9px !important; }
+  #app.x-touch #xandria-radiant-board-chip { left:calc(50% + 152px) !important; right:auto !important; top:10px !important; transform:none !important; }
+  #app.x-touch #xandria-timed-board-chip { left:calc(50% + 204px) !important; right:auto !important; top:10px !important; transform:none !important; }
+  #app.x-touch #xandria-fast-travel-chip { left:12px !important; top:auto !important; bottom:16px !important; transform:none !important; }
+  #app.x-touch #xandria-world-atlas-chip { left:100px !important; top:auto !important; bottom:16px !important; }
+  #app.x-touch .xhud .xphoto-chip { left:288px !important; top:auto !important; bottom:16px !important; font-size:11px !important; padding:6px 8px !important; }
+  #app.x-touch #xandria-standings-panel { top:108px !important; left:16px !important; padding:6px 9px 8px !important; }
+  #app.x-touch .xhud .objective { max-width:220px !important; }
+  #app.x-touch .xhud .bars { top:248px !important; bottom:auto !important; }
+  #app.x-touch .xhud .hint { top:86px !important; bottom:auto !important; max-width:400px !important; text-align:center; }
+  #app.x-touch .xhud .tutcard { top:140px !important; bottom:auto !important; max-width:300px !important; }
+  #app.x-touch .xhud .sneakchip { left:412px !important; bottom:16px !important; }
+  #app.x-touch #xandria-quest-tracker { top:166px !important; right:12px !important; max-width:250px !important; padding:6px 9px 8px !important; }
+  #app.x-touch #xandria-quest-tracker .qo { display:none !important; }
+  #app.x-touch #xandria-quest-tracker .qq { font-size:11px !important; }
+  #app.x-touch .xmap { right:auto !important; left:200px !important; bottom:16px !important; }
+  #app.x-touch .xmap .mbox { width:148px !important; }
+  #app.x-touch .xmap .mbox canvas { width:148px !important; height:148px !important; }
+  #app.x-touch .xmap.expand-mobile .mbox { position:absolute !important; left:60px !important; right:auto !important; bottom:56px !important; }
+}
+/* FIX2 (D-039): touch-landscape COMPACT layout for taller landscape
+   viewports (min-height 520px, e.g. 1600x720). The landscape block above
+   was measured at 390/412px tall; at 720px tall it leaves the full
+   panels + eight large portrait buttons spread down the right side.
+   This block comes later in the sheet at the same specificity, so it
+   wins over the base landscape block:
+   - one slim top strip: objective + score slimmed, objective desc hidden
+   - FACTIONS collapsed: standings panel hidden until the HUD's FACTIONS
+     toggle sets .x-factions-open on #app (panel then parks at top:116,
+     clear of the 32px toggle at top:64)
+   - INTEGRITY slimmed and parked bottom-centre ABOVE the ability bar
+     (ability bar: bottom:64, ~54px tall, ends y656 at H720; the slim
+     bars at bottom:132 end y~590, gap ~12px — NOT bottom:16, which
+     would sit on the ability bar)
+   - bottom-left chips (MAP/ATLAS/MINIMAP/PHOTO) hidden behind the HUD's
+     single MENU button; .x-menu-open on #app reveals them as one row
+     at bottom:64, above the MENU button (bottom:16, 44px tall, gap 4px).
+   The MENU/FACTIONS buttons themselves are display:none by default
+   (HUD stylesheet) and shown here only. */
+@media (orientation: landscape) and (min-height: 520px) {
+  #app.x-touch .xhud .objective { top:8px !important; left:12px !important; max-width:calc(50vw - 224px) !important; padding:6px 10px !important; }
+  #app.x-touch .xhud .objective .desc { display:none !important; }
+  #app.x-touch .xhud .objective .progress { font-size:12px !important; margin-top:2px !important; }
+  #app.x-touch .xhud .score { top:8px !important; right:12px !important; padding:6px 10px !important; }
+  #app.x-touch .xhud .score .val { font-size:17px !important; }
+  #app.x-touch .xhud .score .coinval { font-size:13px !important; margin-top:2px !important; }
+  #app.x-touch .xhud .bars { top:auto !important; bottom:132px !important; left:50% !important; transform:translateX(-50%) !important; width:220px !important; padding:6px 10px !important; }
+  #app.x-touch .xhud .bars .bar { height:8px !important; margin-top:4px !important; }
+  #app.x-touch .xhud .bars .barlabel { font-size:10px !important; margin-top:4px !important; }
+  #app.x-touch .xhud .hint { top:64px !important; }
+  #app.x-touch .xhud .tutcard { top:104px !important; }
+  /* Fix build D-041: the toast (top:18%, centered) painted over the
+     tutorial card (top:104, centered) across the whole compact range —
+     the probe caught toast<->tutprompt at 1600x720. Parking the toast
+     bottom-centre above the slim INTEGRITY bars (bottom:132, ~70px
+     tall, so its top edge is bottom:202) keeps a constant 18px gap at
+     every height, because both anchors are bottom-relative. A px top
+     would re-collide at tall viewports (18% grows with height). */
+  #app.x-touch .xhud .toast { top:auto !important; bottom:220px !important; }
+  #app.x-touch #xandria-standings-panel { display:none !important; }
+  #app.x-touch.x-factions-open #xandria-standings-panel { display:block !important; top:116px !important; left:12px !important; padding:6px 9px 8px !important; }
+  #app.x-touch #xandria-fast-travel-chip,
+  #app.x-touch #xandria-world-atlas-chip,
+  #app.x-touch .xmap,
+  #app.x-touch .xhud .xphoto-chip { display:none !important; }
+  #app.x-touch.x-menu-open #xandria-fast-travel-chip { display:block !important; left:12px !important; top:auto !important; bottom:64px !important; transform:none !important; }
+  #app.x-touch.x-menu-open #xandria-world-atlas-chip { display:block !important; left:100px !important; top:auto !important; bottom:64px !important; }
+  #app.x-touch.x-menu-open .xmap { display:block !important; left:200px !important; right:auto !important; bottom:64px !important; }
+  #app.x-touch.x-menu-open .xhud .xphoto-chip { display:block !important; left:288px !important; top:auto !important; bottom:64px !important; font-size:11px !important; padding:6px 8px !important; }
+  #app.x-touch .xhud .xmenu-chip { display:flex !important; position:absolute; left:12px; bottom:16px; min-height:44px; min-width:44px; padding:6px 12px;
+    background:rgba(20,30,44,.75); border:1px solid rgba(140,180,220,.4); border-radius:8px; color:#e8ecf1;
+    font-size:12px; font-weight:700; letter-spacing:.06em; cursor:pointer; align-items:center; justify-content:center; z-index:20; }
+  #app.x-touch .xhud .xfactions-toggle { display:flex !important; position:absolute; left:12px; top:66px; min-height:44px; min-width:44px; padding:6px 12px;
+    background:rgba(20,30,44,.75); border:1px solid rgba(140,180,220,.4); border-radius:8px; color:#e8ecf1;
+    font-size:12px; font-weight:700; letter-spacing:.06em; cursor:pointer; align-items:center; justify-content:center; z-index:20; }
+}
+`;
+
+const STICK_R = 56; // px travel radius for stickVector
+
+/** Gap kept between the HUD score panel's bottom edge and the pause button. */
+export const PAUSE_BUTTON_GAP = 8;
+
+/**
+ * R3-T1: top offset (px, relative to the touch overlay) for the pause button,
+ * computed from the score panel's measured bottom edge rather than hard-coded.
+ * `scoreBottom` and `overlayTop` are both viewport-space (getBoundingClientRect)
+ * values; the subtraction converts to overlay-relative space. Pure — unit-tested.
+ */
+export function pauseButtonTop(scoreBottom: number, overlayTop: number, gap: number = PAUSE_BUTTON_GAP): number {
+  return Math.ceil(scoreBottom - overlayTop + gap);
+}
+
+export class TouchControls {
+  /** False on desktop: no DOM is built and every method is a no-op. */
+  readonly active: boolean;
+  private input: Input;
+  private layout: TouchLayout;
+  private container: HTMLElement;
+  private root: HTMLElement | null = null;
+  private pauseBtn: HTMLElement | null = null;
+  private visible = false;
+  /** Portrait button defs (layoutForGenre output); display defs derive from these. */
+  private baseButtons: TouchButtonDef[] = [];
+  /** Built buttons, for re-stacking on resize (see applyButtonLayout). */
+  private buttonEls: Array<{ el: HTMLElement; def: TouchButtonDef }> = [];
+  private held = new Set<Action>();
+  private moveId: number | null = null;
+  private moveOX = 0; private moveOY = 0;
+  private moveBase: HTMLElement | null = null;
+  private moveKnob: HTMLElement | null = null;
+  private aimId: number | null = null;
+  private aimOX = 0; private aimOY = 0;
+  private aimBase: HTMLElement | null = null;
+  private aimKnob: HTMLElement | null = null;
+  private lookId: number | null = null;
+  private lookLX = 0; private lookLY = 0;
+  private disposers: Array<() => void> = [];
+
+  constructor(container: HTMLElement, input: Input, genre: string) {
+    this.input = input;
+    this.layout = layoutForGenre(genre);
+    // LANDSCAPE-FIRST: keep the portrait defs as the base; the short-
+    // screen compaction is a display transform re-applied on resize,
+    // so rotating portrait<->landscape re-stacks the buttons instead
+    // of stranding the portrait layout in landscape.
+    this.baseButtons = this.layout.buttons;
+    this.container = container;
+    this.active = isTouchDevice() && typeof document !== 'undefined';
+    if (!this.active) return;
+    input.touchManaged = true; // Input's built-in canvas touch handlers stand down
+    const style = document.createElement('style');
+    style.textContent = CSS;
+    document.head.appendChild(style);
+
+    const root = document.createElement('div');
+    root.className = 'xtouch hidden';
+    root.addEventListener('contextmenu', (e) => e.preventDefault());
+    container.appendChild(root);
+    this.root = root;
+
+    // --- move zone (left 45%) ---
+    if (this.layout.move === 'dpad') this.buildDpad(root);
+    else this.buildStickZone(root, 'move');
+
+    // --- aim: right stick zone or look-drag area (right 55%) ---
+    if (this.layout.aim === 'rstick') this.buildStickZone(root, 'aim');
+    else if (this.layout.aim === 'look') this.buildLookZone(root);
+    else if (this.layout.aim === 'lookstick') this.buildLookStickZone(root);
+
+    // --- action buttons ---
+    for (const b of this.layout.buttons) this.buildButton(root, b);
+
+    // LANDSCAPE-FIRST: stack for the viewport this boot lands in
+    // (a landscape phone boots straight into the compact layout).
+    this.applyButtonLayout();
+
+    // --- pause ---
+    const pb = document.createElement('div');
+    pb.className = 'pausebtn';
+    pb.textContent = '⏸';
+    const onPb = (e: PointerEvent) => { e.preventDefault(); e.stopPropagation(); this.input.tap('pause'); };
+    pb.addEventListener('pointerdown', onPb);
+    // R3-T2: cancel touchstart (non-passive) so the browser never synthesizes
+    // the compatibility mousedown/mouseup/click at the tap point. That click
+    // landed on the PAUSED overlay's RESUME and instantly un-paused, so the
+    // first tap usually failed. Canceling touchstart does NOT suppress pointer
+    // events, so the pointerdown → tap('pause') above still fires.
+    const onPbTs = (e: TouchEvent) => { e.preventDefault(); };
+    pb.addEventListener('touchstart', onPbTs, { passive: false });
+    root.appendChild(pb);
+    this.pauseBtn = pb;
+    this.disposers.push(() => {
+      pb.removeEventListener('pointerdown', onPb);
+      pb.removeEventListener('touchstart', onPbTs);
+    });
+    // LANDSCAPE-FIRST: re-stack the buttons on resize (rotation can
+    // cross the 520px short-screen threshold after construction).
+    // R3-T1: the score panel's height varies by genre / CSS breakpoint — keep
+    // the pause button clear of it on resize/orientation change while visible.
+    const onResize = () => {
+      this.applyButtonLayout();
+      if (this.visible) this.positionPauseButton();
+    };
+    window.addEventListener('resize', onResize);
+    this.disposers.push(() => window.removeEventListener('resize', onResize));
+  }
+
+  // ----- public API -----
+
+  /** Show/hide the overlay (Engine calls this with state === 'playing'). */
+  setVisible(v: boolean) {
+    if (!this.active) return;
+    if (v === this.visible) {
+      // R2-N13: engine.restart() resets Input while the overlay stays visible,
+      // leaving `held` stale — racing's auto-forward 'forward' is the visible
+      // case: the overlay believes gas is held while the car gets none.
+      // Re-apply anything held that the input lost so the two stay consistent.
+      if (v) this.resyncHeld();
+      return;
+    }
+    this.visible = v;
+    this.root!.classList.toggle('hidden', !v);
+    if (v) {
+      // R3-T1: measure the score panel now that the overlay is laid out (the
+      // CSS `top` on .pausebtn is only a fallback). Runs on every transition
+      // to playing so orientation changes re-clear the panel.
+      this.positionPauseButton();
+      if (this.layout.autoForward) this.hold('forward');
+    } else {
+      this.releaseAll();
+    }
+  }
+
+  /**
+   * R3-T1: place the pause button below the HUD score panel's measured bottom
+   * edge (+ PAUSE_BUTTON_GAP). The panel is 81–101 px tall depending on genre
+   * and CSS breakpoint, so a hard-coded offset can't clear it everywhere.
+   * HUD-polish: also clears the quest tracker (#xandria-quest-tracker), which
+   * sits top-right below the score panel and otherwise paints over the
+   * button on touch layouts.
+   * No-ops (keeping the CSS fallback) when there is no HUD score panel in the
+   * container or it isn't laid out yet.
+   */
+  /**
+   * LANDSCAPE-FIRST: re-stack the built buttons for the current
+   * viewport height (portrait defs at >= 520px, compact tops below).
+   * No-op before construction finishes (no button elements yet).
+   */
+  private applyButtonLayout() {
+    if (!this.buttonEls.length || typeof window === 'undefined') return;
+    // FIX2 (D-039): short screens compact first; taller landscape
+    // viewports then re-stack into the compact two-row cluster.
+    const display = compactTouchButtonsLandscape(
+      compactTouchButtons(this.baseButtons, window.innerHeight),
+      window.innerWidth, window.innerHeight);
+    const byLabel = new Map(display.map((d) => [d.label, d]));
+    for (const { el, def } of this.buttonEls) {
+      const d = byLabel.get(def.label) ?? def;
+      el.style.right = `${d.right}px`;
+      el.style.bottom = `${d.bottom}px`;
+      el.style.width = `${d.size}px`;
+      el.style.height = `${d.size}px`;
+      el.style.fontSize = `${Math.round(d.size / 5)}px`;
+    }
+  }
+
+  private positionPauseButton() {
+    const pb = this.pauseBtn;
+    if (!pb || !this.root) return;
+    const score = this.container.querySelector('.xhud .score');
+    if (!score) return; // no HUD score panel — keep the CSS fallback
+    const sr = score.getBoundingClientRect();
+    if (sr.height <= 0) return; // not laid out yet — keep the CSS fallback
+    // LANDSCAPE-FIRST: in landscape the right column is score (top)
+    // + tracker (below it) + button rows — there is no room below
+    // the tracker for the pause button, so it joins the top strip,
+    // measured live left of the score panel (score width varies with
+    // the timer text, so this cannot be a fixed CSS offset). The
+    // top-strip placement is cleared on the way back to portrait.
+    if (typeof window !== 'undefined' && window.innerWidth > window.innerHeight) {
+      const rr = this.root.getBoundingClientRect();
+      pb.style.top = '10px';
+      pb.style.left = `${Math.max(0, Math.round(sr.left - rr.left - 52))}px`;
+      pb.style.right = 'auto';
+      return;
+    }
+    pb.style.left = '';
+    pb.style.right = '';
+    let bottom = sr.bottom;
+    const tracker = this.container.querySelector('#xandria-quest-tracker') as HTMLElement | null;
+    if (tracker && tracker.style.display !== 'none') {
+      const tr = tracker.getBoundingClientRect();
+      if (tr.height > 0) bottom = Math.max(bottom, tr.bottom);
+    }
+    const rr = this.root.getBoundingClientRect();
+    pb.style.top = `${pauseButtonTop(bottom, rr.top)}px`;
+  }
+
+  /**
+   * HUD-polish: re-run the pause-button layout after the quest tracker
+   * re-renders (quests accepted/completed mid-run change its height and
+   * visibility). Blueprints wire `questTracker.onRender` to this. No-op when
+   * touch controls are inactive.
+   */
+  repositionPauseButton() {
+    if (!this.active) return;
+    this.positionPauseButton();
+  }
+
+  /**
+   * R2-N13: re-press every held action the Input no longer has. In-place
+   * restart clears Input (pressAction state) without touching this.held; this
+   * closes the gap so held-state is consistent across restarts. Idempotent —
+   * pressAction() is a no-op for actions already down. Public so automation
+   * hooks (and a future engine restart path) can invoke it directly.
+   */
+  resyncHeld() {
+    if (!this.active) return;
+    for (const a of this.held) {
+      if (!this.input.pressed(a)) this.input.pressAction(a);
+    }
+  }
+
+  dispose() {
+    if (!this.active) return;
+    this.releaseAll();
+    for (const d of this.disposers) d();
+    this.disposers = [];
+    this.input.touchManaged = false;
+    this.root?.remove();
+    this.root = null;
+    this.pauseBtn = null;
+  }
+
+  // ----- internals -----
+
+  private hold(a: Action) {
+    this.held.add(a);
+    this.input.pressAction(a);
+  }
+  private release(a: Action) {
+    this.held.delete(a);
+    this.input.releaseAction(a);
+  }
+  private releaseAll() {
+    for (const a of [...this.held]) this.release(a);
+    this.input.setMoveStick(null);
+    this.moveId = this.aimId = this.lookId = null;
+    if (this.moveBase) this.moveBase.style.display = 'none';
+    if (this.aimBase) this.aimBase.style.display = 'none';
+  }
+
+  private on<K extends keyof HTMLElementEventMap>(
+    el: HTMLElement, type: K, fn: (e: HTMLElementEventMap[K]) => void, opts?: AddEventListenerOptions,
+  ) {
+    el.addEventListener(type, fn as EventListener, opts);
+    this.disposers.push(() => el.removeEventListener(type, fn as EventListener, opts));
+  }
+
+  private makeStickVisual(root: HTMLElement): { base: HTMLElement; knob: HTMLElement } {
+    const base = document.createElement('div');
+    base.className = 'stickbase';
+    const knob = document.createElement('div');
+    knob.className = 'stickknob';
+    base.appendChild(knob);
+    root.appendChild(base);
+    return { base, knob };
+  }
+
+  /** Floating-origin analog stick zone. kind 'move' drives input axes; 'aim' drives aim+autofire. */
+  private buildStickZone(root: HTMLElement, kind: 'move' | 'aim') {
+    const zone = document.createElement('div');
+    zone.className = 'zone';
+    const isMove = kind === 'move';
+    zone.style.cssText = isMove
+      ? 'left:0; top:0; width:45%; height:100%;'
+      : 'right:0; top:0; width:45%; height:100%;';
+    root.appendChild(zone);
+    const { base, knob } = this.makeStickVisual(root);
+    if (isMove) { this.moveBase = base; this.moveKnob = knob; }
+    else { this.aimBase = base; this.aimKnob = knob; }
+
+    const setKnob = (vx: number, vy: number) => {
+      knob.style.transform = `translate(${vx * 38}px, ${vy * 38}px)`;
+    };
+    this.on(zone, 'pointerdown', (e: PointerEvent) => {
+      e.preventDefault();
+      if (isMove ? this.moveId !== null : this.aimId !== null) return;
+      const id = e.pointerId;
+      if (isMove) { this.moveId = id; this.moveOX = e.clientX; this.moveOY = e.clientY; }
+      else { this.aimId = id; this.aimOX = e.clientX; this.aimOY = e.clientY; }
+      base.style.display = 'block';
+      base.style.left = `${e.clientX}px`;
+      base.style.top = `${e.clientY}px`;
+      setKnob(0, 0);
+      try { zone.setPointerCapture(id); } catch { /* ignore */ }
+    });
+    this.on(zone, 'pointermove', (e: PointerEvent) => {
+      const id = isMove ? this.moveId : this.aimId;
+      if (e.pointerId !== id) return;
+      e.preventDefault();
+      const ox = isMove ? this.moveOX : this.aimOX;
+      const oy = isMove ? this.moveOY : this.aimOY;
+      const v = stickVector(e.clientX - ox, e.clientY - oy, STICK_R);
+      setKnob(v.x, v.y);
+      if (isMove) {
+        const steerOnly = this.layout.move === 'steer';
+        this.input.setMoveStick(steerOnly ? { lx: v.x, ly: 0 } : { lx: v.x, ly: v.y });
+      } else {
+        // twin-stick aim: synthesize a pointer offset from screen center in the
+        // stick direction; the blueprint's ground-plane raycast turns it into a
+        // world aim direction. Auto-fire while deflected past the deadzone.
+        this.input.setPointerPos(v.x * 0.45, -v.y * 0.45);
+        if (Math.hypot(v.x, v.y) > 0.25) this.hold('attack');
+        else this.release('attack');
+      }
+    });
+    const end = (e: PointerEvent) => {
+      const id = isMove ? this.moveId : this.aimId;
+      if (e.pointerId !== id) return;
+      if (isMove) { this.moveId = null; this.input.setMoveStick(null); }
+      else { this.aimId = null; this.release('attack'); }
+      base.style.display = 'none';
+    };
+    this.on(zone, 'pointerup', end);
+    this.on(zone, 'pointercancel', end);
+  }
+
+  /** Right-half drag area for FPS look (replaces pointer lock). */
+  private buildLookZone(root: HTMLElement) {
+    const zone = document.createElement('div');
+    zone.className = 'zone';
+    zone.style.cssText = 'right:0; top:0; width:55%; height:100%;';
+    root.appendChild(zone);
+    this.on(zone, 'pointerdown', (e: PointerEvent) => {
+      e.preventDefault();
+      if (this.lookId !== null) return;
+      this.lookId = e.pointerId;
+      this.lookLX = e.clientX; this.lookLY = e.clientY;
+      try { zone.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    });
+    this.on(zone, 'pointermove', (e: PointerEvent) => {
+      if (e.pointerId !== this.lookId) return;
+      e.preventDefault();
+      // 2x desktop-mouse rate: finger drags cover less ground than a mouse
+      this.input.look.x += (e.clientX - this.lookLX) * 2.0;
+      this.input.look.y += (e.clientY - this.lookLY) * 2.0;
+      this.lookLX = e.clientX; this.lookLY = e.clientY;
+    });
+    const end = (e: PointerEvent) => { if (e.pointerId === this.lookId) this.lookId = null; };
+    this.on(zone, 'pointerup', end);
+    this.on(zone, 'pointercancel', end);
+  }
+
+  /**
+   * VoxBox touch view control: floating-origin right stick that turns the
+   * third-person camera via Input.look (no new camera path, no aim/fire
+   * synthesis — unlike 'rstick', this never touches 'attack').
+   * - Zone is the right 45%, mirroring the left move stick; the middle
+   *   10% stays neutral. Buttons are later siblings, so they sit on top
+   *   of the zone and a touch starting on one never reaches the stick.
+   * - Multi-touch: tracked by its own pointerId (aimId), independent of
+   *   the move stick's pointerId, so both sticks live simultaneously.
+   * - The stick visual is pointer-events:none and hidden on release.
+   */
+  private buildLookStickZone(root: HTMLElement) {
+    const zone = document.createElement('div');
+    zone.className = 'zone';
+    zone.style.cssText = 'right:0; top:0; width:45%; height:100%;';
+    root.appendChild(zone);
+    const { base, knob } = this.makeStickVisual(root);
+    this.aimBase = base; this.aimKnob = knob;
+    const setKnob = (vx: number, vy: number) => {
+      knob.style.transform = `translate(${vx * 38}px, ${vy * 38}px)`;
+    };
+    this.on(zone, 'pointerdown', (e: PointerEvent) => {
+      e.preventDefault();
+      if (this.aimId !== null) return;
+      this.aimId = e.pointerId;
+      this.aimOX = e.clientX; this.aimOY = e.clientY;
+      base.style.display = 'block';
+      base.style.left = `${e.clientX}px`;
+      base.style.top = `${e.clientY}px`;
+      setKnob(0, 0);
+      try { zone.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    });
+    this.on(zone, 'pointermove', (e: PointerEvent) => {
+      if (e.pointerId !== this.aimId) return;
+      e.preventDefault();
+      const v = stickVector(e.clientX - this.aimOX, e.clientY - this.aimOY, STICK_R);
+      setKnob(v.x, v.y);
+      const d = lookStickDelta(v.x, v.y);
+      this.input.look.x += d.x;
+      this.input.look.y += d.y;
+    });
+    const end = (e: PointerEvent) => {
+      if (e.pointerId !== this.aimId) return;
+      this.aimId = null;
+      base.style.display = 'none';
+    };
+    this.on(zone, 'pointerup', end);
+    this.on(zone, 'pointercancel', end);
+  }
+
+  private buildButton(root: HTMLElement, b: TouchButtonDef) {
+    const el = document.createElement('div');
+    el.className = 'tbtn';
+    el.textContent = b.label;
+    el.style.cssText = `right:${b.right}px; bottom:${b.bottom}px; width:${b.size}px; height:${b.size}px; font-size:${Math.round(b.size / 5)}px;`;
+    root.appendChild(el);
+    this.buttonEls.push({ el, def: b });
+    this.on(el, 'pointerdown', (e: PointerEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      el.classList.add('held');
+      if (b.kind === 'hold') this.hold(b.action);
+      else this.input.tap(b.action);
+      try { el.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    });
+    const up = (e: PointerEvent) => {
+      e.stopPropagation();
+      el.classList.remove('held');
+      if (b.kind === 'hold') this.release(b.action);
+    };
+    this.on(el, 'pointerup', up);
+    this.on(el, 'pointercancel', up);
+  }
+
+  /** Platformer d-pad: LEFT / RIGHT hold-buttons on the bottom-left. */
+  private buildDpad(root: HTMLElement) {
+    const defs: Array<{ label: string; action: Action; left: number }> = [
+      { label: '◀', action: 'left', left: 24 },
+      { label: '▶', action: 'right', left: 108 },
+    ];
+    for (const d of defs) {
+      const el = document.createElement('div');
+      el.className = 'dpad';
+      el.textContent = d.label;
+      el.style.cssText = `left:${d.left}px; bottom:48px; width:72px; height:72px;`;
+      root.appendChild(el);
+      this.on(el, 'pointerdown', (e: PointerEvent) => {
+        e.preventDefault(); e.stopPropagation();
+        el.classList.add('held');
+        this.hold(d.action);
+        try { el.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+      });
+      const up = (e: PointerEvent) => {
+        e.stopPropagation();
+        el.classList.remove('held');
+        this.release(d.action);
+      };
+      this.on(el, 'pointerup', up);
+      this.on(el, 'pointercancel', up);
+    }
+  }
+}

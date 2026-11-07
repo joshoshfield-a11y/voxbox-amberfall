@@ -1,0 +1,13 @@
+{
+  "direct": {
+    "called": true,
+    "id": "npc-eb3bdb13-0",
+    "name": "Baae Wick",
+    "ret": true,
+    "err": null,
+    "dlgOpen": true,
+    "display": "block",
+    "text": "Baae Wick — villager“You look like you have walked a long way. The settlement could use hands like yours — or it could do without another mouth to feed. Which is it?”I'll help. What needs doing?What's the word around here?You can trust me — ask anyone. — Requires freeholds standing 250 (have 0)Not m"
+  },
+  "errors": []
+}

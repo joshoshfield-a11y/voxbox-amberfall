@@ -1,0 +1,272 @@
+/** Thin cannon-es wrapper with collision groups, helpers, and a raycast API. */
+import * as CANNON from 'cannon-es';
+import * as THREE from 'three';
+
+export const GROUP = {
+  WORLD: 1,
+  PLAYER: 2,
+  ENEMY: 4,
+  PROJECTILE: 8,
+  PICKUP: 16,
+  TRIGGER: 32,
+  VEHICLE: 64,
+  /** ambient NPCs: collide with world/player/NPCs/enemies, never with projectiles */
+  NPC: 128,
+} as const;
+
+export interface RayHit {
+  point: THREE.Vector3;
+  normal: THREE.Vector3;
+  distance: number;
+  body: CANNON.Body;
+}
+
+/** Per-body render-interpolation state: previous + current fixed-step transforms. */
+interface InterpState {
+  prevPos: THREE.Vector3;
+  curPos: THREE.Vector3;
+  prevQuat: THREE.Quaternion;
+  curQuat: THREE.Quaternion;
+}
+
+export class Physics {
+  world: CANNON.World;
+  readonly defaultMat = new CANNON.Material('default');
+  readonly slipperyMat = new CANNON.Material('slippery');
+  readonly bouncyMat = new CANNON.Material('bouncy');
+  private accumulator = 0;
+  readonly fixedStep = 1 / 60;
+  private onStep: Array<(dt: number) => void> = [];
+  /** Render interpolation history, keyed by body. Hot path is allocation-free
+   *  (state objects are created once, on first sight of a body). */
+  private interp = new Map<CANNON.Body, InterpState>();
+
+  constructor(gravity: number) {
+    this.world = new CANNON.World({ gravity: new CANNON.Vec3(0, gravity, 0) });
+    this.world.broadphase = new CANNON.SAPBroadphase(this.world);
+    (this.world.solver as CANNON.GSSolver).iterations = 8;
+    this.world.allowSleep = true;
+    this.world.defaultContactMaterial.friction = 0.4;
+    this.world.defaultContactMaterial.restitution = 0.05;
+    this.world.addContactMaterial(new CANNON.ContactMaterial(this.defaultMat, this.defaultMat, { friction: 0.4, restitution: 0.05 }));
+    this.world.addContactMaterial(new CANNON.ContactMaterial(this.defaultMat, this.slipperyMat, { friction: 0.0, restitution: 0.0 }));
+    this.world.addContactMaterial(new CANNON.ContactMaterial(this.slipperyMat, this.slipperyMat, { friction: 0.0, restitution: 0.0 }));
+    this.world.addContactMaterial(new CANNON.ContactMaterial(this.defaultMat, this.bouncyMat, { friction: 0.3, restitution: 0.8 }));
+  }
+
+  /** Register a callback run once per fixed step (for controllers that need stable dt). */
+  addStepHandler(fn: (dt: number) => void) { this.onStep.push(fn); return () => { this.onStep = this.onStep.filter((f) => f !== fn); }; }
+
+  /** Baselines for in-place restart: counts captured before the blueprint builds. */
+  bodyBaseline(): number { return this.world.bodies.length; }
+  constraintBaseline(): number { return this.world.constraints.length; }
+
+  /**
+   * Remove every body/constraint added after the baseline and clear step
+   * handlers + accumulator — back to the pre-blueprint physics state.
+   */
+  resetToBaseline(bodies: number, constraints: number) {
+    const w = this.world;
+    for (let i = w.bodies.length - 1; i >= bodies; i--) w.removeBody(w.bodies[i]);
+    for (let i = w.constraints.length - 1; i >= constraints; i--) w.removeConstraint(w.constraints[i]);
+    this.onStep = [];
+    this.accumulator = 0;
+    this.interp.clear();
+  }
+
+  step(dt: number) {
+    this.accumulator += Math.min(dt, 0.1);
+    let n = 0;
+    while (this.accumulator >= this.fixedStep && n < 5) {
+      for (const f of this.onStep) f(this.fixedStep);
+      this.world.step(this.fixedStep);
+      this.snapshotInterp();
+      this.accumulator -= this.fixedStep;
+      n++;
+    }
+    if (n === 5) this.accumulator = 0;
+  }
+
+  private static copyBodyTransform(b: CANNON.Body, pos: THREE.Vector3, quat: THREE.Quaternion) {
+    pos.set(b.position.x, b.position.y, b.position.z);
+    quat.set(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w);
+  }
+
+  /** Get (or first-sight create) the interpolation state for a body.
+   *  First sight initializes prev = current, so a body added/removed mid-frame
+   *  can never produce NaNs in the render path. */
+  interpState(body: CANNON.Body): InterpState {
+    let st = this.interp.get(body);
+    if (!st) {
+      st = {
+        prevPos: new THREE.Vector3(),
+        curPos: new THREE.Vector3(),
+        prevQuat: new THREE.Quaternion(),
+        curQuat: new THREE.Quaternion(),
+      };
+      Physics.copyBodyTransform(body, st.prevPos, st.prevQuat);
+      Physics.copyBodyTransform(body, st.curPos, st.curQuat);
+      this.interp.set(body, st);
+    }
+    return st;
+  }
+
+  /** Record prev = current, current = body transform for every simulated body.
+   *  Called once per fixed step, after world.step. Static bodies are skipped
+   *  (they never move, so interpolation would be a no-op). */
+  private snapshotInterp() {
+    for (const b of this.world.bodies) {
+      if (b.type === CANNON.Body.STATIC) continue;
+      const st = this.interpState(b);
+      st.prevPos.copy(st.curPos);
+      st.prevQuat.copy(st.curQuat);
+      Physics.copyBodyTransform(b, st.curPos, st.curQuat);
+    }
+  }
+
+  /** Render-path alpha: where we are between the last two fixed steps. Clamped to [0, 1]. */
+  getInterpolationAlpha(): number {
+    const a = this.accumulator / this.fixedStep;
+    return a < 0 ? 0 : a > 1 ? 1 : a;
+  }
+
+  /** Render-path mesh sync: lerp position and slerp quaternion between the
+   *  previous and current fixed-step transforms. Allocation-free per call
+   *  (writes straight into the mesh; state objects are preallocated). */
+  syncMeshInterpolated(mesh: THREE.Object3D, body: CANNON.Body, alpha = this.getInterpolationAlpha()) {
+    const st = this.interpState(body);
+    const t = alpha < 0 ? 0 : alpha > 1 ? 1 : alpha;
+    mesh.position.lerpVectors(st.prevPos, st.curPos, t);
+    mesh.quaternion.slerpQuaternions(st.prevQuat, st.curQuat, t);
+  }
+
+  /** Render-path: interpolated body position between the last two fixed steps.
+   *  Visual only — sim logic must keep using raw body transforms. */
+  interpolatedPosition(body: CANNON.Body, out: THREE.Vector3): THREE.Vector3 {
+    const st = this.interpState(body);
+    const a = this.getInterpolationAlpha();
+    const t = a < 0 ? 0 : a > 1 ? 1 : a;
+    return out.lerpVectors(st.prevPos, st.curPos, t);
+  }
+
+  /** Snap interpolation state to the body's current transform (call after teleports). */
+  snapInterp(body: CANNON.Body) {
+    const st = this.interpState(body);
+    Physics.copyBodyTransform(body, st.prevPos, st.prevQuat);
+    Physics.copyBodyTransform(body, st.curPos, st.curQuat);
+  }
+
+  box(size: THREE.Vector3 | [number, number, number], pos: THREE.Vector3 | [number, number, number], opts: { mass?: number; group?: number; mask?: number; material?: CANNON.Material; quaternion?: THREE.Quaternion } = {}): CANNON.Body {
+    const s = Array.isArray(size) ? size : [size.x, size.y, size.z];
+    const p = Array.isArray(pos) ? pos : [pos.x, pos.y, pos.z];
+    const body = new CANNON.Body({ mass: opts.mass ?? 0, material: opts.material ?? this.defaultMat, collisionFilterGroup: opts.group ?? GROUP.WORLD, collisionFilterMask: opts.mask ?? -1 });
+    body.addShape(new CANNON.Box(new CANNON.Vec3(s[0] / 2, s[1] / 2, s[2] / 2)));
+    body.position.set(p[0], p[1], p[2]);
+    if (opts.quaternion) body.quaternion.set(opts.quaternion.x, opts.quaternion.y, opts.quaternion.z, opts.quaternion.w);
+    this.world.addBody(body);
+    return body;
+  }
+
+  sphere(radius: number, pos: THREE.Vector3 | [number, number, number], opts: { mass?: number; group?: number; mask?: number; material?: CANNON.Material } = {}): CANNON.Body {
+    const p = Array.isArray(pos) ? pos : [pos.x, pos.y, pos.z];
+    const body = new CANNON.Body({ mass: opts.mass ?? 1, material: opts.material ?? this.defaultMat, collisionFilterGroup: opts.group ?? GROUP.WORLD, collisionFilterMask: opts.mask ?? -1 });
+    body.addShape(new CANNON.Sphere(radius));
+    body.position.set(p[0], p[1], p[2]);
+    this.world.addBody(body);
+    return body;
+  }
+
+  cylinder(radiusTop: number, radiusBottom: number, height: number, pos: THREE.Vector3 | [number, number, number], opts: { mass?: number; group?: number; mask?: number; segments?: number } = {}): CANNON.Body {
+    const p = Array.isArray(pos) ? pos : [pos.x, pos.y, pos.z];
+    const body = new CANNON.Body({ mass: opts.mass ?? 0, material: this.defaultMat, collisionFilterGroup: opts.group ?? GROUP.WORLD, collisionFilterMask: opts.mask ?? -1 });
+    body.addShape(new CANNON.Cylinder(radiusTop, radiusBottom, height, opts.segments ?? 8));
+    body.position.set(p[0], p[1], p[2]);
+    this.world.addBody(body);
+    return body;
+  }
+
+  /**
+   * ONE static body carrying many cylinder shapes — the merged form of
+   * calling cylinder() once per prop: identical shape parameters, material
+   * and collision group, with per-shape offsets in place of per-body
+   * positions. Collision geometry is preserved exactly; only the broadphase
+   * census changes. QA 2026-10-22 (F3 physics diet): chunked scatter used
+   * to add one body per prop instance (2,752 bodies at spawn in the
+   * reference scene); pools now merge their colliders per chunk into a
+   * single body via this helper.
+   */
+  compoundCylinders(cyls: { rt: number; rb: number; h: number; x: number; y: number; z: number }[], opts: { group?: number; mask?: number; segments?: number } = {}): CANNON.Body {
+    const body = new CANNON.Body({ mass: 0, material: this.defaultMat, collisionFilterGroup: opts.group ?? GROUP.WORLD, collisionFilterMask: opts.mask ?? -1 });
+    for (const c of cyls) {
+      body.addShape(new CANNON.Cylinder(c.rt, c.rb, c.h, opts.segments ?? 8), new CANNON.Vec3(c.x, c.y, c.z));
+    }
+    this.world.addBody(body);
+    return body;
+  }
+
+  /** Capsule-ish character body: a sphere stack with locked rotation. */
+  capsule(radius: number, height: number, pos: THREE.Vector3 | [number, number, number], opts: { mass?: number; group?: number; mask?: number } = {}): CANNON.Body {
+    const p = Array.isArray(pos) ? pos : [pos.x, pos.y, pos.z];
+    const body = new CANNON.Body({ mass: opts.mass ?? 70, material: this.slipperyMat, collisionFilterGroup: opts.group ?? GROUP.PLAYER, collisionFilterMask: opts.mask ?? -1, fixedRotation: true, linearDamping: 0.0 });
+    const half = Math.max(0, height / 2 - radius);
+    body.addShape(new CANNON.Sphere(radius), new CANNON.Vec3(0, -half, 0));
+    if (half > 0) {
+      body.addShape(new CANNON.Sphere(radius), new CANNON.Vec3(0, half, 0));
+      body.addShape(new CANNON.Cylinder(radius, radius, half * 2, 8));
+    }
+    body.position.set(p[0], p[1], p[2]);
+    body.allowSleep = false;
+    body.updateMassProperties();
+    this.world.addBody(body);
+    return body;
+  }
+
+  remove(body: CANNON.Body) { this.world.removeBody(body); this.interp.delete(body); }
+
+  raycast(from: THREE.Vector3, to: THREE.Vector3, mask = -1, skipBody?: CANNON.Body): RayHit | null {
+    const result = new CANNON.RaycastResult();
+    const ray = new CANNON.Ray(new CANNON.Vec3(from.x, from.y, from.z), new CANNON.Vec3(to.x, to.y, to.z));
+    if (skipBody) {
+      // cannon-es Ray has no body exclusion: intersect the filtered list directly.
+      // The old post-filter returned null whenever the skipped body was the
+      // closest hit — which silently broke any probe starting inside the
+      // skipped body (the CharacterController ground probe starts inside the
+      // player capsule, so `grounded` was never true and jumping died after
+      // the first double jump).
+      ray.mode = CANNON.Ray.CLOSEST;
+      ray.skipBackfaces = true;
+      ray.collisionFilterMask = mask;
+      ray.collisionFilterGroup = -1;
+      ray.checkCollisionResponse = false;
+      ray.intersectBodies(this.world.bodies.filter((b) => b !== skipBody), result);
+    } else {
+      ray.intersectWorld(this.world, { mode: CANNON.Ray.CLOSEST, result, skipBackfaces: true, collisionFilterMask: mask, collisionFilterGroup: -1, checkCollisionResponse: false } as any);
+    }
+    if (!result.hasHit) return null;
+    return {
+      point: new THREE.Vector3(result.hitPointWorld.x, result.hitPointWorld.y, result.hitPointWorld.z),
+      normal: new THREE.Vector3(result.hitNormalWorld.x, result.hitNormalWorld.y, result.hitNormalWorld.z),
+      distance: result.distance,
+      body: result.body!,
+    };
+  }
+
+  /** Ground probe below a point; returns ground Y or null. */
+  groundY(x: number, z: number, fromY = 200, mask = GROUP.WORLD): number | null {
+    const hit = this.raycast(new THREE.Vector3(x, fromY, z), new THREE.Vector3(x, -200, z), mask);
+    return hit ? hit.point.y : null;
+  }
+
+  dispose() {
+    for (const b of [...this.world.bodies]) this.world.removeBody(b);
+    this.onStep = [];
+    this.interp.clear();
+  }
+}
+
+export const toV3 = (v: CANNON.Vec3, out = new THREE.Vector3()) => out.set(v.x, v.y, v.z);
+export const toCV3 = (v: THREE.Vector3) => new CANNON.Vec3(v.x, v.y, v.z);
+export const syncMesh = (mesh: THREE.Object3D, body: CANNON.Body) => {
+  mesh.position.set(body.position.x, body.position.y, body.position.z);
+  mesh.quaternion.set(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w);
+};

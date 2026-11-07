@@ -1,0 +1,67 @@
+
+Running 6 tests using 1 worker
+
+  ✘  1 tests/e2e/beta/bots.spec.ts:781:3 › bot tp-action: third-person-action playthrough (12.0m)
+  ✓  2 tests/e2e/beta/fuzz.spec.ts:221:5 › B2 input monkey + NaN sweep › monkey tp-action (1.4m)
+  -  3 tests/e2e/beta/perf.spec.ts:121:5 › perf tp-action/high
+  -  4 tests/e2e/beta/perf.spec.ts:121:5 › perf tp-action/standard
+  -  5 tests/e2e/beta/perf.spec.ts:121:5 › perf tp-action/retro
+[soak] t=44s frame=14 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=73s/600s
+[soak] t=74s frame=17 heap=141.1MB state=playing bot=active
+[soak] t=104s frame=19 heap=141.1MB state=playing bot=active
+[soak] t=137s frame=22 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=137s/600s
+[soak] t=168s frame=24 heap=141.1MB state=playing bot=active
+[soak] t=201s frame=28 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=201s/600s
+[soak] t=231s frame=30 heap=141.1MB state=playing bot=active
+[soak] t=261s frame=32 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=261s/600s
+[soak] t=291s frame=34 heap=141.1MB state=playing bot=active
+[soak] t=338s frame=39 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=338s/600s
+[soak] t=368s frame=41 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=398s/600s
+[soak] t=399s frame=43 heap=141.1MB state=playing bot=active
+[soak] t=429s frame=47 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=458s/600s
+[soak] t=459s frame=49 heap=141.1MB state=playing bot=active
+[soak] t=490s frame=51 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=519s/600s
+[soak] t=520s frame=53 heap=141.1MB state=playing bot=active
+[soak] t=550s frame=57 heap=141.1MB state=playing bot=active
+[soak] t=592s frame=60 heap=141.1MB state=playing bot=active
+[soak] heartbeat t=592s/600s
+[soak] PASS outcome=playing-throughout errors=0 growthFactor=1.000 duration=617s
+  ✓  6 tests/e2e/beta/soak.spec.ts:99:1 › soak: 10-minute unattended endurance run (tp-action) (10.3m)
+
+
+  1) tests/e2e/beta/bots.spec.ts:781:3 › bot tp-action: third-person-action playthrough ────────────
+
+    Error: [tp-action] errors:0 | score 0→0 | progress 0→0 | softlock 7/29 | nan:0 | frames:61 | softlock: window@0s moved 0.00m engaging 0%; window@169s moved 0.00m engaging 0%; window@270s moved 0.00m engaging 0%; window@372s moved 0.00m engaging 0%; window@437s moved 0.00m engaging 0%; window@604s moved 0.00m engaging 0%; window@644s moved 0.00m engaging 0%
+    notes: baseline frame=9 score=0 progress=0 / hit real-time cap; stopping bot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      784 |     mkdirSync(RESULTS_DIR, { recursive: true });
+      785 |     writeFileSync(join(RESULTS_DIR, `bots-${g.name}.json`), JSON.stringify(report, null, 2) + '\n');
+    > 786 |     expect(report.passed, `[${g.name}] ${report.summary}\nnotes: ${report.notes.join(' / ')}`).toBe(true);
+          |                                                                                                ^
+      787 |   });
+      788 | }
+      789 |
+        at /home/hatch/workspace/voxbox-amberfall/xandria-studio/tests/e2e/beta/bots.spec.ts:786:96
+
+    Error Context: test-results/beta-bots-bot-tp-action-third-person-action-playthrough/error-context.md
+
+  Slow test file: tests/e2e/beta/bots.spec.ts (12.0m)
+  Slow test file: tests/e2e/beta/soak.spec.ts (10.3m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    tests/e2e/beta/bots.spec.ts:781:3 › bot tp-action: third-person-action playthrough ─────────────
+  3 skipped
+  2 passed (26.0m)

@@ -1,0 +1,69 @@
+{
+  "run": "landscape-touch-skip",
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "promptDisplay": "none",
+  "skipTap": "touchscreen.tap",
+  "skipped": {
+    "tutorialStep": null
+  },
+  "series": [
+    {
+      "t": "0s-after-skip",
+      "fullLuma": 0.3091,
+      "centerLuma": 0.3249,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.2986,
+      "state": "playing",
+      "frame": 29,
+      "particles": {
+        "additive": 0,
+        "normal": 0
+      },
+      "tutorialStep": null
+    },
+    {
+      "t": "3s-after-skip",
+      "fullLuma": 0.3091,
+      "centerLuma": 0.325,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.299,
+      "state": "playing",
+      "frame": 54,
+      "particles": {
+        "additive": 0,
+        "normal": 0
+      },
+      "tutorialStep": null
+    },
+    {
+      "t": "8s-after-skip",
+      "fullLuma": 0.3091,
+      "centerLuma": 0.3251,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.299,
+      "state": "playing",
+      "frame": 79,
+      "particles": {
+        "additive": 0,
+        "normal": 0
+      },
+      "tutorialStep": null
+    }
+  ],
+  "errors": []
+}

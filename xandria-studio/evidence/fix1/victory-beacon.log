@@ -1,0 +1,15 @@
+
+Running 1 test using 1 worker
+
+reachBeacon candidates: [{"x":-1415.082118651457,"z":2697.3029935687778}]
+reachBeacon goal (-1415,2697) attempt 0: dist3=2.00 py=4.6 terrainY=2.6 state=playing end=null toast=null
+reachBeacon goal (-1415,2697) attempt 1: dist3=2.00 py=4.6 terrainY=2.6 state=playing end=null toast=null
+reachBeacon goal (-1415,2697) attempt 2: dist3=2.00 py=4.6 terrainY=2.6 state=playing end=null toast=null
+reachBeacon goal (-1415,2697) attempt 3: dist3=2.00 py=4.6 terrainY=2.6 state=playing end=null toast=null
+reachBeacon goal (-1415,2697) attempt 4: dist3=2.00 py=4.6 terrainY=2.6 state=playing end=null toast=null
+reachBeacon goal (-1415,2697) attempt 5: dist3=1.66 py=4.3 terrainY=2.6 state=won end=VICTORY toast=null
+  ✓  1 tests/e2e/victory-path.spec.ts:392:1 › victory-path: beacon branch reaches VICTORY (20.6m)
+
+  Slow test file: tests/e2e/victory-path.spec.ts (20.6m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 passed (21.2m)

@@ -1,0 +1,23 @@
+{
+  "config": "1280x720",
+  "touch": false,
+  "shots": [
+    {
+      "t": 1,
+      "centerLuma": 0.3461
+    },
+    {
+      "t": 3,
+      "centerLuma": 0.3462
+    },
+    {
+      "t": 8,
+      "centerLuma": 0.3462
+    },
+    {
+      "t": 30,
+      "centerLuma": 0.3473
+    }
+  ],
+  "errors": []
+}

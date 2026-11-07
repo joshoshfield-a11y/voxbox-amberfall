@@ -1,0 +1,66 @@
+{
+  "view": "spawn",
+  "config": "desktop",
+  "tag": "p4bafter",
+  "samples": 8,
+  "medians": {
+    "calls": 665,
+    "triangles": 1910722,
+    "geometries": 368,
+    "textures": 25,
+    "programs": 39,
+    "instancedMeshes": 237,
+    "instances": 182019,
+    "populatedMeshes": 233,
+    "visibleInstancedMeshes": 235,
+    "buckets": null,
+    "specEnv": "ruins",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      601,
+      665
+    ],
+    "triangles": [
+      1828822,
+      1910722
+    ],
+    "geometries": [
+      327,
+      368
+    ],
+    "textures": [
+      25,
+      25
+    ],
+    "programs": [
+      38,
+      39
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      182019,
+      182019
+    ],
+    "populatedMeshes": [
+      233,
+      233
+    ],
+    "visibleInstancedMeshes": [
+      235,
+      235
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.3309,
+  "consoleErrors": []
+}

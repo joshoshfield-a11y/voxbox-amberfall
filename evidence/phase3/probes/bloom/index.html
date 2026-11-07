@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>bloom isolation probe</title>
+<script type="importmap">
+{ "imports": {
+  "three": "/xandria-studio/node_modules/three/build/three.module.js",
+  "three/addons/": "/xandria-studio/node_modules/three/examples/jsm/"
+} }
+</script>
+<style>body{margin:0;background:#000}canvas{display:block}</style>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+// Mirrors the game's PostFX chain (PostFX.ts): HalfFloat composer target,
+// RenderPass + UnrealBloomPass(strength 0.45 standard, radius 0.6, threshold T),
+// ACES exposure 0.72. The bloom-blend output-transform patch is replicated
+// from PostFX.patchBloomOutputTransform so the bloom path and the direct
+// path share the same ACES+sRGB output transform (otherwise the delta
+// comparison would be meaningless).
+function patchBloom(bloom) {
+  const m = bloom.blendMaterial;
+  if (m && typeof m.fragmentShader === 'string' && !m.fragmentShader.includes('<tonemapping_fragment>')) {
+    const fs = m.fragmentShader;
+    m.fragmentShader = fs.replace(/\}\s*$/, '\t#include <tonemapping_fragment>\n\t#include <colorspace_fragment>\n}');
+  }
+}
+
+const W = 512, H = 512;
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.72;
+document.body.appendChild(renderer.domElement);
+
+// Orthographic view: quad spans 60% of the frame, center far from edges
+// relative to the bloom blur kernel. Metrics: center 16x16 mean + halo
+// annulus (just outside the quad) mean, both in displayed sRGB 0..1.
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+camera.position.set(0, 0, 5);
+
+function readMeans() {
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.canvas.width = W; ctx.canvas.height = H;
+  ctx.drawImage(renderer.domElement, 0, 0);
+  const d = ctx.getImageData(0, 0, W, H).data;
+  const px = (x, y) => { const i = (y * W + x) * 4; return [d[i] / 255, d[i + 1] / 255, d[i + 2] / 255]; };
+  const lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  let cs = 0, cn = 0;
+  for (let y = H / 2 - 8; y < H / 2 + 8; y++) for (let x = W / 2 - 8; x < W / 2 + 8; x++) { cs += lum(px(x, y)); cn++; }
+  // Halo annulus: quad half-width in px = 0.6 * 256 = 153.6; sample ring 165..195 px from center.
+  let hs = 0, hn = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const r = Math.hypot(x - W / 2, y - H / 2);
+    if (r >= 168 && r <= 196) { hs += lum(px(x, y)); hn++; }
+  }
+  return { center: cs / cn, halo: hs / hn };
+}
+
+function basicMat(hex, intensity) {
+  const c = new THREE.Color(hex).multiplyScalar(intensity);
+  return new THREE.MeshBasicMaterial({ color: c });
+}
+function stdMat(hex, intensity) {
+  // Real glow material: mats.glow = flat(hex, { emissive: hex, ... }) — the
+  // base color IS hex, so sun/hemi/ambient diffuse adds to the emissive term.
+  // (First probe run wrongly used black here, measuring emissive-only twice.)
+  return new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), emissive: new THREE.Color(hex), emissiveIntensity: intensity, roughness: 0.3 });
+}
+
+const topCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+topCamera.up.set(0, 0, -1);
+topCamera.position.set(0, 5, 0);
+topCamera.lookAt(0, 0, 0);
+
+function runCase(mesh, threshold, cam = camera) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0, 0, 0);
+  scene.add(mesh);
+  // Lit rig for standard-material cases: dusk sun + hemi (game B1 values).
+  if (mesh.material.isMeshStandardMaterial) {
+    const sun = new THREE.DirectionalLight(0xffc07a, 2.05);
+    sun.position.set(0.5, 0.28, 1); // ~16 deg elevation, from camera side
+    scene.add(sun);
+    scene.add(new THREE.HemisphereLight(0x8ec4e8, 0x8a8a52, 1.05));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  }
+  const target = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 0 });
+  const composer = new EffectComposer(renderer, target);
+  composer.addPass(new RenderPass(scene, cam));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.45, 0.6, threshold);
+  patchBloom(bloom);
+  composer.addPass(bloom);
+  composer.render();
+  const withBloom = readMeans();
+  composer.dispose(); target.dispose();
+  // No-bloom control: direct render (same ACES+sRGB screen transform).
+  renderer.render(scene, cam);
+  const noBloom = readMeans();
+  return {
+    centerBloom: +withBloom.center.toFixed(4), centerPlain: +noBloom.center.toFixed(4),
+    centerDelta: +(withBloom.center - noBloom.center).toFixed(4),
+    haloBloom: +withBloom.halo.toFixed(4), haloPlain: +noBloom.halo.toFixed(4),
+    haloDelta: +(withBloom.halo - noBloom.halo).toFixed(4),
+  };
+}
+
+const quad = (mat) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), mat); return m; };
+const box = (mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), mat); return m; };
+
+const CASES = [
+  // [name, material factory, mesh factory]
+  ['sky-horizon-proxy #f0e2b8 @1.03', () => basicMat('#f0e2b8', 1.03), quad],
+  ['sunlit-ground-proxy #8a8a52 @0.8', () => basicMat('#8a8a52', 0.8), quad],
+  ['mushroom accent @0.25', () => basicMat('#ff9e2e', 0.25), quad],
+  ['hero-wisp white @1.2', () => basicMat('#ffffff', 1.2), quad],
+  ['biome-glowcap #ffb43c @1.2', () => basicMat('#ffb43c', 1.2), quad],
+  ['crystalflora accent @1.3', () => basicMat('#ff9e2e', 1.3), quad],
+  ['prop-crystal accent @1.6 (current)', () => basicMat('#ff9e2e', 1.6), quad],
+  ['prop-crystal accent @2.4 (bump)', () => basicMat('#ff9e2e', 2.4), quad],
+  ['hero-post accent @1.6 (current)', () => basicMat('#ff9e2e', 1.6), quad],
+  ['hero-post accent @2.4 (bump)', () => basicMat('#ff9e2e', 2.4), quad],
+  ['biome-lantern #ffb43c @2.0 (NOT in bump plan)', () => basicMat('#ffb43c', 2.0), quad],
+  ['runestone-face accent @2.0 (current)', () => basicMat('#ff9e2e', 2.0), quad],
+  ['runestone-face accent @2.8 (bump)', () => basicMat('#ff9e2e', 2.8), quad],
+  ['hero-pylon-td accent @2.0 (current)', () => basicMat('#ff9e2e', 2.0), quad],
+  ['hero-pylon-td accent @2.8 (bump)', () => basicMat('#ff9e2e', 2.8), quad],
+  ['hero-pylon-fps accent @2.2 (no bump planned)', () => basicMat('#ff9e2e', 2.2), quad],
+  ['char-trim accent @2.0 (NOT in bump plan)', () => basicMat('#ff9e2e', 2.0), quad],
+  ['landmark-beam #bfe6ff @2.4', () => basicMat('#bfe6ff', 2.4), quad],
+  ['rune-ring AMBER #ffb545 @2.6', () => basicMat('#ffb545', 2.6), quad],
+  ['lantern-orb AMBER @2.6', () => basicMat('#ffb545', 2.6), quad],
+  ['doorway/window AMBER @2.8', () => basicMat('#ffb545', 2.8), quad],
+  ['beam-core white @3.0', () => basicMat('#ffffff', 3.0), quad],
+  // Lit (MeshStandardMaterial + dusk rig): diffuse adder on top of emissive.
+  ['LIT runestone-face accent @2.0 vertical', () => stdMat('#ff9e2e', 2.0), quad],
+  ['LIT runestone-face accent @2.8 vertical', () => stdMat('#ff9e2e', 2.8), quad],
+  ['LIT biome-lantern #ffb43c @2.0 box', () => stdMat('#ffb43c', 2.0), box],
+  ['LIT char-trim accent @2.0 vertical', () => stdMat('#ff9e2e', 2.0), quad],
+  ['LIT crystalflora accent @1.3 vertical', () => stdMat('#ff9e2e', 1.3), quad],
+  ['LIT prop-crystal accent @1.6 box', () => stdMat('#ff9e2e', 1.6), box],
+  ['LIT prop-crystal accent @2.4 box', () => stdMat('#ff9e2e', 2.4), box],
+  ['LIT rune-ring AMBER @2.6 ground-plane', () => stdMat('#ffb545', 2.6), (m) => { const q = quad(m); q.rotation.x = -Math.PI / 2; return q; }, topCamera],
+  ['LIT ground-strip accent @2.0 ground-plane', () => stdMat('#ff9e2e', 2.0), (m) => { const q = quad(m); q.rotation.x = -Math.PI / 2; return q; }, topCamera],
+];
+
+const results = [];
+for (const [name, matFn, meshFn, cam] of CASES) {
+  const r115 = runCase(meshFn(matFn()), 1.15, cam);
+  const r125 = runCase(meshFn(matFn()), 1.25, cam);
+  const blooms = (r) => (r.haloDelta > 0.01 || r.centerDelta > 0.01);
+  results.push({ name, t115: r115, blooms115: blooms(r115), t125: r125, blooms125: blooms(r125) });
+}
+window.__BLOOM_RESULTS__ = results;
+document.title = 'bloom-done';
+</script>
+</body></html>

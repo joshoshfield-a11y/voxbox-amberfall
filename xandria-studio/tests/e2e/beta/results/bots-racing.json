@@ -1,0 +1,32 @@
+{
+  "suite": "bots",
+  "name": "racing",
+  "genre": "racing",
+  "passed": false,
+  "durationMs": 204285,
+  "metrics": {
+    "frames": 180,
+    "scoreStart": 300,
+    "scoreEnd": 800,
+    "progressStart": 0,
+    "progressEnd": 1,
+    "softlockWindows": 9
+  },
+  "errors": [],
+  "notes": [
+    "steer calibration: left Δ=0.925 right Δ=-1.354 moved=43.3/1.0m speed=35.7/2.8/0.0m/s → UNVERIFIED, default +1 leftSign=1",
+    "baseline frame=41 score=300 progress=0",
+    "trail f41 pos=(65.8,-71.0) yaw=0.79",
+    "stuck (<1m in 12s wall) — tapped 'reset' at frame 53",
+    "trail f74 pos=(133.6,-69.8) yaw=2.80",
+    "stuck (<1m in 12s wall) — tapped 'reset' at frame 106",
+    "trail f107 pos=(134.4,-71.3) yaw=-0.07",
+    "trail f137 pos=(106.8,-75.1) yaw=1.91",
+    "stuck (<1m in 12s wall) — tapped 'reset' at frame 140",
+    "trail f169 pos=(77.1,66.5) yaw=-2.99",
+    "stuck (<1m in 12s wall) — tapped 'reset' at frame 188",
+    "trail f200 pos=(59.1,53.6) yaw=1.87",
+    "reached 180 rendered frames"
+  ],
+  "summary": "errors:0 | score 300→800 | progress 0→1 | softlock 1/9 | nan:0 | frames:180 | softlock: window@40s moved 0.27m engaging 0%"
+}

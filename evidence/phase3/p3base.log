@@ -1,0 +1,6 @@
+p3base-spawn-844x390 calls=676 tris=1951030 geoms=379 tex=25 progs=39 inst=237 buckets=null luma=0.2787 errs=0
+p3base-spawn-915x412 calls=676 tris=1951030 geoms=379 tex=25 progs=39 inst=237 buckets=null luma=0.289 errs=0
+p3base-spawn-desktop calls=664 tris=1890722 geoms=367 tex=25 progs=39 inst=237 buckets=null luma=0.3308 errs=0
+p3base-forest-844x390 calls=676 tris=3223190 geoms=377 tex=25 progs=39 inst=237 buckets=null luma=0.2591 errs=0
+p3base-forest-915x412 calls=676 tris=3223190 geoms=377 tex=25 progs=39 inst=237 buckets=null luma=0.2692 errs=0
+p3base-forest-desktop calls=607 tris=3220982 geoms=331 tex=25 progs=38 inst=237 buckets=null luma=0.3051 errs=0

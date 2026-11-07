@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.skit.voxboxamberfall">
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <!-- No INTERNET permission: the packaged player.html makes no runtime
+       network fetch. The only https strings in the bundle are (a) a GLSL
+       shader comment citation, (b) an XML namespace in the data-URI
+       favicon, and (c) the href of the decorative "make your own" link on
+       the Made-with-XANDRIA splash, which is inert in this WebView (no
+       WebChromeClient, target=_blank opens nothing). -->
+  <application android:label="VoxBox: Amberfall" android:icon="@mipmap/ic_launcher"
+      android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:hardwareAccelerated="true">
+    <activity android:name=".MainActivity" android:exported="true"
+        android:screenOrientation="landscape"
+        android:configChanges="orientation|screenSize|keyboardHidden">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

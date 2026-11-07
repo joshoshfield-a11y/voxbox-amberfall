@@ -1,0 +1,207 @@
+/** Sky dome (gradient shader), sun/moon, hemisphere + directional light with shadows, fog, stars. */
+import * as THREE from 'three';
+import type { GameSpec } from '@spec';
+import { createAtmosphere, type AtmosphereRig } from './Atmosphere';
+import { gradeAtmosphere, type BiomeDefLike } from './GenreGrade';
+import { fogDensityScaleForWorldSize } from './FarField';
+import { LightLife } from './LightLife';
+import { Rng } from '../core/Rng';
+
+export interface SkyRig {
+  group: THREE.Group;
+  sun: THREE.DirectionalLight;
+  hemi: THREE.HemisphereLight;
+  ambient: THREE.AmbientLight;
+  /** recommended tone-mapping exposure (physical sky is HDR-bright) */
+  exposure: number;
+  /**
+   * Lighting-life system (polish wave, LOOK crew): flickering point lights,
+   * pulsing emissive materials, and the pooled 3-light flash system for
+   * muzzle flashes / pickups. Blueprints register via
+   * engine.sky.lightLife.flicker()/pulse()/flash().
+   */
+  lightLife: LightLife;
+  update(dt: number, target: THREE.Vector3): void;
+  dispose(): void;
+}
+
+export function createSky(
+  spec: GameSpec,
+  scene: THREE.Scene,
+  quality: 'retro' | 'standard' | 'high' = 'retro',
+  /**
+   * Biome override for the atmosphere grade. Defaults to spec.theme.environment.
+   * Workstream C seam: pass its BiomeDef here once Biomes.ts lands — the
+   * BiomeDefLike fogColor/fogDensity/waterTint wire through automatically.
+   */
+  biome?: string | BiomeDefLike | null,
+): SkyRig {
+  const { palette, timeOfDay, weather, environment } = spec.theme;
+  const group = new THREE.Group();
+  const top = new THREE.Color(palette.sky);
+  const bottom = new THREE.Color(palette.horizon);
+  const night = timeOfDay === 'night';
+  const dusk = timeOfDay === 'dusk' || timeOfDay === 'dawn';
+  // Beauty wave: per-genre atmosphere grade (exposure, fog, lights, clouds).
+  // Night grades to identity — the night visibility floor must not regress.
+  // Graphics wave D2: the biome id layers per-biome cinematic dusk grading
+  // over the genre grade (BiomeDefLike seam in GenreGrade).
+  const grade = gradeAtmosphere(spec.meta.genre, timeOfDay, biome ?? spec.theme.environment);
+  if (night) { top.multiplyScalar(0.25); bottom.multiplyScalar(0.35); }
+  if (dusk) { bottom.lerp(new THREE.Color('#ff9a5c'), 0.45); top.multiplyScalar(0.85); }
+
+  // Dome: physical Preetham atmosphere by day/dusk, stylized gradient+stars at night
+  let dome: THREE.Mesh;
+  let skyMat: THREE.ShaderMaterial | null = null;
+  let atmo: AtmosphereRig | null = null;
+  let sunDirPhys: THREE.Vector3 | null = null;
+  if (!night) {
+    atmo = createAtmosphere(spec);
+    dome = atmo.dome;
+    sunDirPhys = atmo.sunDir;
+    group.add(dome);
+  } else {
+    skyMat = new THREE.ShaderMaterial({
+    uniforms: { top: { value: top }, bottom: { value: bottom }, sunDir: { value: new THREE.Vector3(0.3, 0.5, 0.2).normalize() }, sunColor: { value: new THREE.Color(night ? '#c8d8ff' : '#fff2c0') }, time: { value: 0 }, stars: { value: night ? 1 : 0 } },
+    vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `
+      uniform vec3 top; uniform vec3 bottom; uniform vec3 sunDir; uniform vec3 sunColor; uniform float time; uniform float stars;
+      varying vec3 vDir;
+      float hash(vec3 p){ p = fract(p*0.3183099+.1); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+      void main(){
+        float h = clamp(vDir.y, -0.2, 1.0);
+        vec3 col = mix(bottom, top, pow(max(h,0.0), 0.55));
+        float s = max(dot(normalize(vDir), sunDir), 0.0);
+        col += sunColor * (pow(s, 256.0) * 1.5 + pow(s, 8.0) * 0.25);
+        if (stars > 0.5 && h > 0.0) { float st = step(0.997, hash(floor(vDir*180.0))); col += vec3(st) * (0.6 + 0.4*sin(time*3.0 + hash(floor(vDir*180.0))*20.0)); }
+        gl_FragColor = vec4(col, 1.0);
+      }`,
+    side: THREE.BackSide, depthWrite: false, fog: false,
+  });
+    dome = new THREE.Mesh(new THREE.SphereGeometry(900, 24, 16), skyMat);
+    dome.frustumCulled = false;
+    // Workstream D: render first like the day dome — without this the dome's
+    // 900m shell would paint over terrain farther than 900m at night.
+    dome.renderOrder = -1;
+    group.add(dome);
+  }
+
+  // Clouds: a few flat translucent discs drifting.
+  // FIX: seeded RNG (was Math.random) so world generation is fully deterministic.
+  // Draw-call diet (graphics follow-up, worker D): one InstancedMesh of a unit
+  // circle instead of one Mesh per cloud (10–26 draws → 1). The per-cloud
+  // radius w and squash sy are baked into the instance matrix as scale
+  // (w, w·sy, w) under the same -90° X rotation — vertex-for-vertex identical
+  // to the old per-mesh path (see derivation in the D handoff). The cloudGroup
+  // drift still applies — instances are static relative to their group.
+  const rng = new Rng(spec.meta.seed ^ 0xc10d5);
+  const cloudGroup = new THREE.Group();
+  let cloudMesh: THREE.InstancedMesh | null = null;
+  if (weather !== 'clear' || environment !== 'space-station') {
+    const cm = new THREE.MeshBasicMaterial({ color: night ? '#3a4460' : grade.cloudColor, transparent: true, opacity: (weather === 'storm' ? 0.85 : 0.55) * grade.clouds, depthWrite: false, fog: false });
+    const count = weather === 'clear' ? 10 : 26;
+    cloudMesh = new THREE.InstancedMesh(new THREE.CircleGeometry(1, 12), cm, count);
+    const m4 = new THREE.Matrix4();
+    const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+    const pos = new THREE.Vector3();
+    const scl = new THREE.Vector3();
+    for (let i = 0; i < count; i++) {
+      // rng sequence identical to the old per-mesh path: w, x, y, z, squash
+      const w = 60 + rng.range(0, 120);
+      pos.set(rng.range(-700, 700), 180 + rng.range(0, 80), rng.range(-700, 700));
+      const sy = 0.5 + rng.next();
+      scl.set(w, w * sy, w);
+      m4.compose(pos, q, scl);
+      cloudMesh.setMatrixAt(i, m4);
+    }
+    cloudMesh.instanceMatrix.needsUpdate = true;
+    cloudMesh.castShadow = false;
+    cloudMesh.receiveShadow = false;
+    cloudMesh.computeBoundingSphere();
+    cloudGroup.add(cloudMesh);
+  }
+  group.add(cloudGroup);
+
+  // Lighting
+  // Visibility floor: night stays moody but never renders pitch-black. These are
+  // minimums — a dark palette (e.g. neon-city) under the old 0.5/0.35/0.12 levels
+  // produced an effectively black framebuffer (see visibility.spec.ts).
+  // VoxBox breakout B1 (bright golden dusk): dusk sun brighter and warmer,
+  // hemi/ambient fill lifted, shadow normalBias raised for chunky geometry.
+  // Night values are locked (pinned by genre-grade tests); day untouched.
+  const sunColor = night ? new THREE.Color('#7f8fc0') : dusk ? new THREE.Color('#ffc07a') : new THREE.Color('#fff4e0');
+  const sun = new THREE.DirectionalLight(sunColor, (night ? 1.8 : dusk ? 2.05 : 2.2) * grade.sun);
+  const sunDir = sunDirPhys ? sunDirPhys.clone() : new THREE.Vector3(0.45, dusk ? 0.35 : 0.75, 0.35).normalize();
+  sun.position.copy(sunDir).multiplyScalar(140);
+  sun.castShadow = true;
+  // T1-4: shadow resolution scales with quality — retro was paying for a
+  // 2048px shadow map on a 0.66x pixel-ratio pipeline.
+  const shadowRes = quality === 'high' ? 2048 : 1024;
+  sun.shadow.mapSize.set(shadowRes, shadowRes);
+  sun.shadow.camera.near = 10; sun.shadow.camera.far = 400;
+  // Open World stage 1 (workstream D) — shadow camera NOT scaled with world
+  // size, deliberately: the shadow frustum is a player-local ±90m box that
+  // follows the camera target, and the far field is outside it by design
+  // (distant terrain reads fine unshadowed under fog; a world-sized shadow
+  // map would just smear the near-field shadows that matter).
+  const sh = 90;
+  sun.shadow.camera.left = -sh; sun.shadow.camera.right = sh; sun.shadow.camera.top = sh; sun.shadow.camera.bottom = -sh;
+  sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.03;
+  if (skyMat) skyMat.uniforms.sunDir.value.copy(sunDir);
+  group.add(sun); group.add(sun.target);
+
+  const hemi = new THREE.HemisphereLight(top.clone().lerp(new THREE.Color('#ffffff'), 0.3), new THREE.Color(palette.ground).multiplyScalar(0.6), (night ? 1.3 : dusk ? 1.05 : 0.9) * grade.hemi);
+  const ambient = new THREE.AmbientLight('#ffffff', (night ? 0.9 : dusk ? 0.35 : 0.25) * grade.ambient);
+  group.add(hemi, ambient);
+
+  // Fog — density and luminance graded per genre so backgrounds hold detail
+  // instead of blowing out to white (night keeps the 0.35 darkening, grade is identity).
+  // D2: a BiomeDefLike fog color/density (workstream C's BiomeDef) overrides the
+  // palette/weather-derived values when present.
+  const fogColor = new THREE.Color(grade.biomeFog ?? palette.fog);
+  if (night) fogColor.multiplyScalar(0.35);
+  fogColor.multiplyScalar(grade.fogLuminance);
+  // Env-art dusk preset: warm amber haze — the reference vistas are ALL dusk.
+  if (grade.fogTint) fogColor.lerp(new THREE.Color(grade.fogTint), 0.35);
+  const density = grade.biomeFogDensity
+    ?? (weather === 'fog' ? 0.012 : weather === 'storm' || weather === 'ash' ? 0.007 : environment === 'space-station' ? 0.002 : 0.0035) * grade.fogDensity;
+  // Open World stage 1 (workstream D): thin the density on big worlds so the
+  // horizon fades naturally instead of white-outing the mid-field or popping
+  // at the far plane. The authored per-biome/genre values above stay the
+  // source of truth — this is a scale, not a replacement — and the factor is
+  // 1 for worlds at/below the reference size (existing worlds unchanged).
+  const densityScaled = density * fogDensityScaleForWorldSize(spec.world.terrain.size);
+  scene.fog = new THREE.FogExp2(fogColor.getHex(), densityScaled);
+  scene.background = fogColor;
+
+  scene.add(group);
+  // Polish wave (LOOK crew): lighting life — flickering lights, pulsing
+  // emissives, pooled flash lights. Updated in the rig's per-frame update
+  // below; disabled at retro quality (retro keeps its own look).
+  const lightLife = new LightLife(scene, quality);
+  let t = 0;
+  return {
+    group, sun, hemi, ambient,
+    exposure: grade.exposure,
+    lightLife,
+    update(dt, target) {
+      t += dt;
+      lightLife.update(dt);
+      if (skyMat) skyMat.uniforms.time.value = t;
+      dome.position.copy(target);
+      cloudGroup.position.x = target.x + ((t * 4) % 200) - 100;
+      cloudGroup.position.z = target.z;
+      // keep shadow frustum on the player
+      sun.position.copy(target).addScaledVector(sunDir, 140);
+      sun.target.position.copy(target);
+      sun.target.updateMatrixWorld();
+    },
+    dispose() {
+      scene.remove(group);
+      dome.geometry.dispose();
+      if (cloudMesh) { cloudMesh.geometry.dispose(); cloudMesh.dispose(); }
+      if (skyMat) skyMat.dispose();
+      if (atmo) atmo.dispose();
+    },
+  };
+}

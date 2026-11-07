@@ -1,0 +1,44 @@
+{
+  "touchActive": true,
+  "before": {
+    "layerZ": 9650,
+    "btnRect": {
+      "x": 22,
+      "y": 358,
+      "w": 153,
+      "h": 69
+    },
+    "hitTag": "DIV",
+    "hitId": "",
+    "hitClass": "rp-sub",
+    "hitIsButton": false,
+    "rotateDisplay": "flex",
+    "rotateZ": "9800"
+  },
+  "anywayPt": {
+    "x": 179.9921875,
+    "y": 488.5
+  },
+  "afterDismiss": {
+    "layerZ": 9650,
+    "btnRect": {
+      "x": 22,
+      "y": 358,
+      "w": 153,
+      "h": 69
+    },
+    "hitTag": "BUTTON",
+    "hitId": "",
+    "hitClass": "lvlopt",
+    "hitIsButton": true,
+    "rotateDisplay": "none",
+    "rotateZ": "9800"
+  },
+  "btnPt": {
+    "x": 98.421875,
+    "y": 392.3046875
+  },
+  "lvlId": "u_a",
+  "modalGone": true,
+  "errors": []
+}

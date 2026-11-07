@@ -1,0 +1,86 @@
+{
+  "config": "desktop",
+  "tag": "before",
+  "samples": [
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    },
+    {
+      "calls": 601,
+      "triangles": 1650598,
+      "geometries": 327,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 228
+    }
+  ],
+  "median": {
+    "calls": 601,
+    "triangles": 1650598,
+    "geometries": 327,
+    "instancedMeshes": 237,
+    "instances": 137379,
+    "buckets": 228
+  },
+  "ranges": {
+    "calls": [
+      601,
+      601
+    ]
+  },
+  "consoleErrors": [],
+  "screenshot": "before-desktop.png"
+}

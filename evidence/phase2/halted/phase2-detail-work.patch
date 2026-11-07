@@ -1,0 +1,651 @@
+diff --git a/xandria-studio/src/engine/game/CharacterController.ts b/xandria-studio/src/engine/game/CharacterController.ts
+index 437c84f..3c303c1 100644
+--- a/xandria-studio/src/engine/game/CharacterController.ts
++++ b/xandria-studio/src/engine/game/CharacterController.ts
+@@ -101,7 +101,8 @@ export class CharacterController {
+     // palette-derived `colors` param; an import-model URL swaps the rig async.
+     const slot = engine.spec.custom?.characters?.player;
+     const skinDef = resolveSkinDef(engine.spec, slot?.skin);
+-    if (skinDef) applySkin(this.rig, skinDef, skinOptionsForSpec(engine.spec));
++    // VoxBox Phase 2: player armor detail gated off on the s25 tier.
++    if (skinDef) applySkin(this.rig, skinDef, { ...skinOptionsForSpec(engine.spec), armorDetail: engine.tiers?.tier !== 's25' });
+     // Player cosmetics (Profile, per save slot) win over the spec skin —
+     // the player's own look is theirs, not the spec author's. Identity
+     // default (no cosmetics chosen) changes nothing.
+@@ -185,7 +186,7 @@ export class CharacterController {
+       clearVoxelCape(this.rig, 'skin');
+       const slot = this.engine.spec.custom?.characters?.player;
+       const skinDef = resolveSkinDef(this.engine.spec, slot?.skin);
+-      if (skinDef) applySkin(this.rig, skinDef, skinOptionsForSpec(this.engine.spec));
++      if (skinDef) applySkin(this.rig, skinDef, { ...skinOptionsForSpec(this.engine.spec), armorDetail: this.engine.tiers?.tier !== 's25' });
+       let sel = selection;
+       if (!sel) {
+         try { sel = loadProfile().cosmetics; } catch { sel = undefined; }
+@@ -198,7 +199,7 @@ export class CharacterController {
+     const rig = await loadRigFromURL(url, boneMap);
+     if (!rig) return; // procedural fallback stands
+     const skinDef = resolveSkinDef(this.engine.spec, this.engine.spec.custom?.characters?.player?.skin);
+-    if (skinDef) applySkin(rig, skinDef, skinOptionsForSpec(this.engine.spec));
++    if (skinDef) applySkin(rig, skinDef, { ...skinOptionsForSpec(this.engine.spec), armorDetail: this.engine.tiers?.tier !== 's25' });
+     const old = this.rig;
+     this.engine.scene.remove(old.group);
+     old.dispose();
+diff --git a/xandria-studio/src/engine/game/EnemyAI.ts b/xandria-studio/src/engine/game/EnemyAI.ts
+index 41c2740..3377c10 100644
+--- a/xandria-studio/src/engine/game/EnemyAI.ts
++++ b/xandria-studio/src/engine/game/EnemyAI.ts
+@@ -19,6 +19,7 @@ import { resolveSkinDef, applySkin, skinOptionsForSpec } from '../gfx/Skins';
+ // makeHumanoid, drone/flyer = makeDrone, turret = makeTurret), behavior,
+ // stats, aggro, and boss mechanics are untouched.
+ import { applyEnemyArmor } from '../gfx/VoxelArmor';
++import { VoxelGeoCache } from './voxelGeo';
+ import { loadRigFromURL, type BoneMapping } from '../gfx/RigAdapter';
+ import type { EnemySpec, EnemyKind } from '@spec';
+ import type { Projectiles } from './Projectiles';
+@@ -383,7 +384,13 @@ export class Enemy {
+       // armor over the under-suit tints above. An explicit spec skin applied
+       // below still wins (applySkin strips skin-origin armor for skins
+       // without armor).
+-      applyEnemyArmor(this.rig, armorSet, { origin: 'skin' });
++      // VoxBox Phase 2: shared armor geometries + sub-voxel detail, gated
++      // off on the s25 tier (same gate as Npc).
++      applyEnemyArmor(this.rig, armorSet, {
++        origin: 'skin',
++        detail: engine.tiers?.tier !== 's25',
++        geo: VoxelGeoCache.for(engine),
++      });
+       // DE — character customization: explicit spec skin wins over kind colors;
+       // an import-model URL swaps the rig async (procedural fallback always).
+       const slot = engine.spec.custom?.characters?.enemies?.[spec.kind]
+diff --git a/xandria-studio/src/engine/game/Npc.ts b/xandria-studio/src/engine/game/Npc.ts
+index d2bd3bc..4ea841b 100644
+--- a/xandria-studio/src/engine/game/Npc.ts
++++ b/xandria-studio/src/engine/game/Npc.ts
+@@ -37,6 +37,7 @@ import type { NpcSpec, VoxelArmorSetId } from '@spec';
+ import type { Interactable } from './Interaction';
+ import { generateNpcName, generateNpcGreeting } from './npcNames';
+ import { NpcRigCache, npcLookKey, npcLookSeed, type NpcLookKey, type NpcAdopted } from './npcRigSharing';
++import { VoxelGeoCache } from './voxelGeo';
+ 
+ /** Salt distinguishing NPC roster streams from every other per-map stream. */
+ export const NPC_SALT = 0x4e5043;
+@@ -192,7 +193,14 @@ export class Npc {
+     // visor slit), torso (chest plate + belt), accessory (pauldrons). The
+     // legs slot (greaves) and vambraces are skipped to keep the per-NPC
+     // draw cost down; cloth pants carry the lower body instead.
+-    const armorOpts = { visorColor: p.visor, origin: 'skin' as const };
++    // VoxBox Phase 2: shared armor geometries + sub-voxel detail, gated
++    // off on the s25 tier (PerformanceManager) so the phone tier costs
++    // zero extra instances; desktop keeps the detail, bucket-neutral.
++    const armorOpts = {
++      visorColor: p.visor, origin: 'skin' as const,
++      detail: this.engine.tiers?.tier !== 's25',
++      geo: VoxelGeoCache.for(this.engine),
++    };
+     applyVoxelArmorSlot(this.rig, 'head', p.armorSet, armorOpts);
+     applyVoxelArmorSlot(this.rig, 'torso', p.armorSet, armorOpts);
+     applyVoxelArmorSlot(this.rig, 'accessory', p.armorSet, armorOpts);
+diff --git a/xandria-studio/src/engine/gfx/EquipRig.ts b/xandria-studio/src/engine/gfx/EquipRig.ts
+index 782110f..6ca77f0 100644
+--- a/xandria-studio/src/engine/gfx/EquipRig.ts
++++ b/xandria-studio/src/engine/gfx/EquipRig.ts
+@@ -88,7 +88,7 @@ function mountFor(rig: CharacterRig, slot: EquipSlot, itemKind: string): { paren
+  */
+ export function equip(
+   rig: CharacterRig, slot: EquipSlot, def: ItemDef,
+-  opts?: { spec?: GameSpec },
++  opts?: { spec?: GameSpec; armorDetail?: boolean },
+ ): THREE.Object3D | null {
+   try {
+     if (!rig || !slot || !def) return null;
+@@ -105,7 +105,7 @@ export function equip(
+       try {
+         const armorId = resolveItemSkinDef(opts.spec, def.skin)?.armor;
+         if (armorId && resolveVoxelArmorSet(armorId)) {
+-          applyVoxelArmorSlot(rig, slot as VoxelArmorSlot, armorId, { origin: 'item' });
++          applyVoxelArmorSlot(rig, slot as VoxelArmorSlot, armorId, { origin: 'item', detail: opts?.armorDetail });
+         }
+       } catch { /* armor is decorative — the item mesh already mounted */ }
+     }
+diff --git a/xandria-studio/src/engine/gfx/Skins.ts b/xandria-studio/src/engine/gfx/Skins.ts
+index 5800dad..3ef0a50 100644
+--- a/xandria-studio/src/engine/gfx/Skins.ts
++++ b/xandria-studio/src/engine/gfx/Skins.ts
+@@ -43,6 +43,12 @@ export interface ApplySkinOptions {
+    */
+   autoArmor?: boolean;
+   seed?: number;
++  /**
++   * VoxBox Phase 2 detail gate for skin-applied armor. Undefined → detail
++   * on (the applyVoxelArmor default). Callers with tier knowledge
++   * (CharacterController) pass false on the s25 tier.
++   */
++  armorDetail?: boolean;
+ }
+ 
+ /**
+@@ -523,7 +529,7 @@ export function applySkin(rig: { group: THREE.Object3D }, skin: SkinDef, opts?:
+       const visorIntensity = skin.visor && typeof skin.visor.intensity === 'number' &&
+         Number.isFinite(skin.visor.intensity)
+         ? THREE.MathUtils.clamp(skin.visor.intensity, 0, 5) : undefined;
+-      applyVoxelArmor(cRig, armorId, { visorColor, visorIntensity, origin: 'skin' });
++      applyVoxelArmor(cRig, armorId, { visorColor, visorIntensity, origin: 'skin', detail: opts?.armorDetail });
+     } else {
+       clearVoxelArmor(cRig, undefined, 'skin');
+     }
+diff --git a/xandria-studio/src/engine/gfx/VoxelArmor.ts b/xandria-studio/src/engine/gfx/VoxelArmor.ts
+index 7aa03a5..198f937 100644
+--- a/xandria-studio/src/engine/gfx/VoxelArmor.ts
++++ b/xandria-studio/src/engine/gfx/VoxelArmor.ts
+@@ -27,12 +27,31 @@
+  * seeded, segmented cloth chain on the torso pivot, driven by the rig's
+  * existing animate() cloth math. It is deliberately outside the slot contract
+  * above: clearVoxelArmor never touches cape pieces.
++ *
++ * VoxBox Phase 2 (voxel pass 1 — character detail): sub-voxel subdivision
++ * of the primary pieces. Detail voxels (rivets, seams, layered plates,
++ * visor-slit variants) are MERGED INTO the primary piece's geometry
++ * (mergeGeometries): one mesh per primary piece, subdivided into many
++ * voxel boxes, with the piece's material untouched. Mesh count, instancer
++ * bucket count, and draw-call count are therefore unchanged by
++ * construction — only triangle counts rise — and the pinned primary-piece
++ * census (armorPiece meshes) is unchanged. The merged geometry keeps a
++ * BoxGeometry-style `parameters` object (its bounding-box dims) so the
++ * geometry+placement signatures in the armor tests keep working. Detail
++ * is tier-gated by the callers (ApplyVoxelArmorOpts.detail; Npc/EnemyAI
++ * pass false on the s25 tier, so the phone tier pays no extra triangles).
++ * Primary boxes optionally draw from the shared VoxelGeoCache when the
++ * caller supplies one (Npc/EnemyAI, which own an Engine); without it the
++ * per-piece geometry path is unchanged. Cones are never merged (see the
++ * enemy-instancing test that pins cone geometry identity per set).
+  */
+ import * as THREE from 'three';
++import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+ import { bakedTexture } from './BakedTextures';
+ import type { CharacterRig } from './Characters';
+ import { VOXEL_ARMOR_SET_IDS, type EquipSlot } from '@spec';
+ import { Rng } from '../core/Rng';
++import { VoxelGeoCache } from '../game/voxelGeo';
+ 
+ /** Pivots armor may parent to. 'root' is reserved for future sets. */
+ export type VoxelArmorPivot =
+@@ -71,8 +90,38 @@ export interface ApplyVoxelArmorOpts {
+   /** override the set's default visor intensity, clamped 0..5 */
+   visorIntensity?: number;
+   origin?: VoxelArmorOrigin;
++  /**
++   * Phase 2 detail gate. Default true (sub-voxel boxes are merged into
++   * the primary pieces). Pass false to build the base set only — the s25
++   * tier does this so the detail pass costs the phone tier zero extra
++   * triangles. Detail never adds meshes or buckets either way (the
++   * sub-boxes merge into the primary piece's geometry).
++   */
++  detail?: boolean;
++  /**
++   * Shared quantized box-geometry cache (VoxelGeoCache). When supplied,
++   * primary boxes with identical dims share one geometry object (one
++   * instancer bucket); without it each box keeps its own geometry, as
++   * before. Callers without an Engine (skins, EquipRig, unit tests) omit
++   * it. Cone spikes never use the cache (see the enemy-instancing test
++   * that pins cone geometry identity per set).
++   */
++  geo?: VoxelGeoCache;
+ }
+ 
++/**
++ * Phase 2 visor-slit shape variants, one per faction/set. The SHAPE varies;
++ * the glow color/intensity stay the set's own (ctx.glow), so no new emissive
++ * role is ever created and villager visors stay non-ember / enemy visors
++ * stay ember. 'single' is the original unbroken slit (no detail children).
++ */
++export type VoxelVisorVariant = 'single' | 'tdrop' | 'twin' | 'slant' | 'double';
++
++const VISOR_VARIANTS: Record<string, VoxelVisorVariant> = {
++  nomad: 'single', raider: 'tdrop', guardian: 'twin', scout: 'slant', plate: 'double',
++  marauder: 'single', bloodreaver: 'tdrop', brutehide: 'twin',
++};
++
+ export interface VoxelArmorCtx {
+   rig: CharacterRig;
+   shell: THREE.MeshStandardMaterial;
+@@ -80,6 +129,8 @@ export interface VoxelArmorCtx {
+   dark: THREE.MeshStandardMaterial;
+   /** emissive material for the visor slit + glowing accents */
+   glow: THREE.MeshStandardMaterial;
++  /** this set's visor-slit shape variant (Phase 2) */
++  visorVariant: VoxelVisorVariant;
+   /** slot filter: null = full set; otherwise only pieces for this slot are built */
+   slot: VoxelArmorSlot | null;
+   /** slot the currently-building piece belongs to (set by forSlot) — used for armorSlot tagging */
+@@ -103,6 +154,28 @@ export interface VoxelArmorCtx {
+     x: number, y: number, z: number, mat?: THREE.Material,
+     rx?: number, rz?: number,
+   ) => THREE.Mesh | null;
++  /**
++   * PHASE 2 detail: merge a sub-voxel box INTO an existing armor piece's
++   * geometry. Sizes (w/h/d) are ABSOLUTE, in the parent mesh's local
++   * units; (x, y, z) is the sub-box center in the parent's local frame
++   * (parent center = origin, parent box spans ±dims/2); rz optionally
++   * rotates the sub-box about its own center. The parent's material,
++   * position, and userData are untouched; its geometry becomes the merge
++   * of the old geometry and the sub-box, so the piece stays ONE mesh in
++   * ONE bucket — detail adds triangles, never meshes or buckets. The
++   * merged geometry carries a `parameters` object (bounding-box dims) so
++   * geometry+placement signatures keep working. Sub-box dims/offsets are
++   * quantized to the VoxelGeoCache grid (3 decimals) so merged
++   * geometries collapse under content-hash sharing exactly like the base
++   * boxes. Returns the parent mesh (null = no-op: detail gated off, or
++   * the parent is missing / has a material array / has an unmergeable
++   * geometry). Never mutates a shared base geometry: mergeGeometries
++   * returns a fresh geometry.
++   */
++  detail: (
++    parent: THREE.Mesh | null, w: number, h: number, d: number,
++    x: number, y: number, z: number, rz?: number,
++  ) => THREE.Mesh | null;
+ }
+ 
+ export interface Box { cx: number; cy: number; cz: number; sx: number; sy: number; sz: number }
+@@ -207,7 +280,8 @@ function measurePivot(rig: CharacterRig, p: VoxelArmorPivot, mode: 'self' | 'sub
+     ].filter((o): o is THREE.Object3D => !!o));
+     const consider = (o: THREE.Object3D) => {
+       const m = o as THREE.Mesh;
+-      if (!m.isMesh || (o as { userData?: { armorPiece?: boolean } }).userData?.armorPiece) return;
++      const ud = (o as { userData?: { armorPiece?: boolean } }).userData;
++      if (!m.isMesh || ud?.armorPiece) return;
+       _tmpBox.setFromObject(m);
+       _tmpBox.applyMatrix4(inv);
+       out.union(_tmpBox);
+@@ -259,6 +333,8 @@ function buildCtx(
+   const dark = makeMat(set.palette.dark, 0.85, 0.1);
+   const glow = makeMat('#111111', 0.3, 0.0, visorColor, visorIntensity);
+   const origin = opts.origin ?? 'skin';
++  const detailOn = opts.detail !== false;
++  const geo = opts.geo;
+   const armorSlotFor = (pivot: VoxelArmorPivot): VoxelArmorSlot => {
+     if (pivot === 'head') return 'head';
+     if (pivot === 'torso') return 'torso';
+@@ -267,12 +343,15 @@ function buildCtx(
+   };
+   const ctx: VoxelArmorCtx = {
+     rig, shell, trim, dark, glow, slot, pieceSlot: null,
++    visorVariant: VISOR_VARIANTS[set.id] ?? 'single',
+     measure: (p, mode) => measurePivot(rig, p, mode),
+     box: (pivot, w, h, d, x, y, z, mat = shell, rx = 0, rz = 0) => {
+       try {
+         const parent = pivotFor(rig, pivot);
+         if (!parent || !(w > 0 && h > 0 && d > 0)) return null;
+-        const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
++        // Phase 2: identical dims share one geometry when the caller
++        // supplied the shared cache (Npc/EnemyAI); otherwise per-piece.
++        const mesh = new THREE.Mesh(geo ? geo.box(w, h, d) : new THREE.BoxGeometry(w, h, d), mat);
+         mesh.position.set(x, y, z);
+         if (rx) mesh.rotation.x = rx;
+         if (rz) mesh.rotation.z = rz;
+@@ -281,6 +360,20 @@ function buildCtx(
+         mesh.userData.armorSet = set.id;
+         mesh.userData.armorOrigin = origin;
+         mesh.userData.armorSlot = ctx.pieceSlot ?? slot ?? armorSlotFor(pivot);
++        // Phase 2 re-basing (see detail()): the requested dims, and the
++        // dims of the geometry object actually assigned — with a shared
++        // cache these differ: the cache returns the first requester's
++        // geometry for the whole quantized key. detail() re-bases its
++        // inputs onto the assigned geometry's dims so same-key pieces
++        // merge to bit-identical content.
++        mesh.userData.voxelReqDims = [w, h, d];
++        mesh.geometry.computeBoundingBox();
++        const bb0 = mesh.geometry.boundingBox;
++        if (bb0) {
++          const s0 = new THREE.Vector3();
++          bb0.getSize(s0);
++          mesh.userData.voxelBaseDims = [s0.x, s0.y, s0.z];
++        }
+         parent.add(mesh);
+         return mesh;
+       } catch {
+@@ -310,6 +403,87 @@ function buildCtx(
+         return null;
+       }
+     },
++    // PHASE 2 detail: merge a sub-voxel box into the parent mesh's
++    // geometry. mergeGeometries builds a fresh geometry and never
++    // mutates its inputs, so a shared (cached/canonical) base geometry
++    // is never corrupted; the merged result keeps a `parameters`
++    // object (bounding-box dims) for the armor signatures.
++    // Bucket-neutrality needs one more step: sub-box dims/offsets are
++    // QUANTIZED to the VoxelGeoCache grid (3 decimals) before merging,
++    // and the merged vertex positions are snapped to the same grid after
++    // merging. Armor dims derive from per-NPC measured pivots and vary in
++    // the 4th+ decimal across looks; un-snapped, every merged geometry
++    // hashes unique under NpcRigCache sharing and detail splits buckets
++    // (+24 measured). Snapped, same-key pieces merge to bit-identical
++    // content and collapse into one canonical geometry / one bucket,
++    // exactly like the cached base boxes do. (Max vertex shift 0.0005
++    // units — invisible.)
++    detail: (parent, w, h, d, x, y, z, rz = 0) => {
++      try {
++        if (!detailOn || !parent) return null;
++        // Phase 2 re-basing: builders compute detail inputs from their
++        // own measured pivot dims, which vary per NPC in the 2nd+ decimal
++        // even for looks that share one cached base geometry. Re-base the
++        // inputs onto the ASSIGNED geometry's dims (recorded by box()):
++        // a fractional input becomes an exact function of the shared dims,
++        // so same-key pieces merge to bit-identical content and collapse
++        // under NpcRigCache sharing. Uncached pieces have ratio exactly 1
++        // and are untouched; wild ratios mean the parent wasn't built by
++        // box() — leave the inputs alone rather than distorting them.
++        const req = parent.userData.voxelReqDims as number[] | undefined;
++        const baseDims = parent.userData.voxelBaseDims as number[] | undefined;
++        if (req && baseDims) {
++          const sx = req[0] > 0 ? baseDims[0] / req[0] : 1;
++          const sy = req[1] > 0 ? baseDims[1] / req[1] : 1;
++          const sz = req[2] > 0 ? baseDims[2] / req[2] : 1;
++          if (sx > 0.9 && sx < 1.1 && sy > 0.9 && sy < 1.1 && sz > 0.9 && sz < 1.1) {
++            w *= sx; h *= sy; d *= sz; x *= sx; y *= sy; z *= sz;
++          }
++        }
++        const q = (v: number) => Math.round(v * 1000) / 1000;
++        w = q(w); h = q(h); d = q(d); x = q(x); y = q(y); z = q(z);
++        if (!(w > 0 && h > 0 && d > 0)) return null;
++        if (Array.isArray(parent.material)) return null;
++        const base = parent.geometry as THREE.BufferGeometry | undefined;
++        if (!base || !base.index) return null;
++        const attrs = base.attributes;
++        if (!attrs.position || !attrs.normal || !attrs.uv) return null;
++        const sub = new THREE.BoxGeometry(w, h, d);
++        const m = new THREE.Matrix4().makeRotationZ(rz);
++        m.setPosition(x, y, z);
++        sub.applyMatrix4(m);
++        const merged = mergeGeometries([base, sub], false);
++        if (!merged) return null;
++        // PHASE 2 bucket collapse: snap every merged vertex to the
++        // VoxelGeoCache grid (1e-3). Armor dims derive from per-NPC
++        // measured pivots and vary in the 4th+ decimal across looks;
++        // un-snapped, same-key merges hash unique under NpcRigCache
++        // sharing and detail splits buckets (+24 measured). Snapped,
++        // same-key merges are bit-identical arrays and collapse into one
++        // canonical geometry / one bucket, exactly like the cached base
++        // boxes. Max vertex shift 0.0005 units — invisible. The base
++        // geometry is never touched (merge output is a fresh object).
++        const pos = merged.getAttribute('position') as THREE.BufferAttribute | undefined;
++        if (pos) {
++          const arr = pos.array as Float32Array;
++          for (let i = 0; i < arr.length; i++) arr[i] = Math.round(arr[i] * 1000) / 1000;
++          pos.needsUpdate = true;
++        }
++        merged.computeBoundingBox();
++        const bb = merged.boundingBox;
++        if (bb) {
++          const size = new THREE.Vector3();
++          bb.getSize(size);
++          (merged as unknown as { parameters: unknown }).parameters = {
++            width: size.x, height: size.y, depth: size.z,
++          };
++        }
++        parent.geometry = merged;
++        return parent;
++      } catch {
++        return null;
++      }
++    },
+   };
+   return ctx;
+ }
+@@ -318,6 +492,29 @@ function buildCtx(
+ // shared piece builders
+ // ---------------------------------------------------------------------------
+ 
++/** Phase 2: the glowing slit + its shape variant (see VoxelVisorVariant). */
++function visorSlit(ctx: VoxelArmorCtx, w: number, y: number, z: number) {
++  const slit = ctx.box('head', w, 0.055, 0.035, 0, y, z, ctx.glow);
++  if (!slit) return;
++  const v = ctx.visorVariant;
++  if (v === 'tdrop') ctx.detail(slit, w * 0.18, 0.132, 0.035, 0, -0.0935, 0);
++  else if (v === 'twin') {
++    ctx.detail(slit, w * 0.14, 0.132, 0.035, -w * 0.28, -0.0935, 0);
++    ctx.detail(slit, w * 0.14, 0.132, 0.035, w * 0.28, -0.0935, 0);
++  } else if (v === 'slant') {
++    ctx.detail(slit, w * 0.16, 0.154, 0.035, -w * 0.38, 0, 0, 0.5);
++    ctx.detail(slit, w * 0.16, 0.154, 0.035, w * 0.38, 0, 0, -0.5);
++  } else if (v === 'double') ctx.detail(slit, w * 0.8, 0.055, 0.035, 0, -0.154, 0);
++}
++
++/** Phase 2: four raised studs on the front face of a plate (parent-local). */
++function faceRivets(ctx: VoxelArmorCtx, plate: THREE.Mesh | null, w: number, h: number, d: number) {
++  if (!plate) return;
++  const px = w / 2 - 0.06, py = h / 2 - 0.06;
++  const pz = d / 2 + 0.005;
++  for (const x of [-px, px]) for (const y of [-py, py]) ctx.detail(plate, 0.045, 0.045, 0.03, x, y, pz);
++}
++
+ /** Blocky helm + glowing visor slit (the reference's signature read). */
+ function helm(ctx: VoxelArmorCtx, opts: { ridge?: boolean } = {}) {
+   const m = ctx.measure('head', 'subtree');
+@@ -326,11 +523,29 @@ function helm(ctx: VoxelArmorCtx, opts: { ridge?: boolean } = {}) {
+   const h = m.sy * 1.4;
+   const d = Math.max(m.sx, m.sz) * 1.5;
+   const y = m.cy + m.sy * 0.10;
+-  ctx.box('head', w, h, d, 0, y, m.cz, ctx.shell);
+-  if (opts.ridge) ctx.box('head', w * 0.28, h * 0.16, d * 1.04, 0, y + h * 0.52, m.cz, ctx.trim);
++  const shell = ctx.box('head', w, h, d, 0, y, m.cz, ctx.shell);
++  // Phase 2: temple studs + crown plate subdividing the shell.
++  if (shell) {
++    ctx.detail(shell, 0.03, 0.05, 0.09, w / 2 + 0.005, 0.02, 0);
++    ctx.detail(shell, 0.03, 0.05, 0.09, -(w / 2 + 0.005), 0.02, 0);
++    ctx.detail(shell, w * 0.45, 0.03, d * 0.6, 0, h / 2 + 0.005, 0);
++  }
++  if (opts.ridge) {
++    const ridge = ctx.box('head', w * 0.28, h * 0.16, d * 1.04, 0, y + h * 0.52, m.cz, ctx.trim);
++    // Phase 2: crest segmentation along the ridge.
++    if (ridge) {
++      const rh = h * 0.16, rd = d * 1.04;
++      for (const z of [-rd * 0.28, 0, rd * 0.28]) ctx.detail(ridge, 0.035, 0.035, rd * 0.22, 0, rh / 2 + 0.0075, z);
++    }
++  }
+   // brow band + the glowing slit
+-  ctx.box('head', w * 1.02, h * 0.10, d * 1.02, 0, y + h * 0.30, m.cz, ctx.dark);
+-  ctx.box('head', w * 0.62, 0.055, 0.035, 0, y + h * 0.10, m.cz + d / 2 + 0.008, ctx.glow);
++  const brow = ctx.box('head', w * 1.02, h * 0.10, d * 1.02, 0, y + h * 0.30, m.cz, ctx.dark);
++  if (brow) {
++    const bd = d * 1.02;
++    ctx.detail(brow, 0.04, 0.04, 0.03, w * 0.3, 0, bd / 2 + 0.005);
++    ctx.detail(brow, 0.04, 0.04, 0.03, -w * 0.3, 0, bd / 2 + 0.005);
++  }
++  visorSlit(ctx, w * 0.62, y + h * 0.10, m.cz + d / 2 + 0.008);
+   // chin guard
+   ctx.box('head', w * 0.72, h * 0.20, d * 0.72, 0, y - h * 0.40, m.cz + d * 0.06, ctx.dark);
+ }
+@@ -343,12 +558,21 @@ function hood(ctx: VoxelArmorCtx) {
+   const h = m.sy * 1.4;
+   const d = Math.max(m.sx, m.sz) * 1.5;
+   const y = m.cy + m.sy * 0.10;
+-  ctx.box('head', w * 1.08, h * 1.18, d * 0.42, 0, y + h * 0.06, m.cz - d * 0.42, ctx.shell); // back drape
++  const drape = ctx.box('head', w * 1.08, h * 1.18, d * 0.42, 0, y + h * 0.06, m.cz - d * 0.42, ctx.shell); // back drape
++  // Phase 2: studs on the back drape.
++  if (drape) {
++    const dd = d * 0.42;
++    ctx.detail(drape, 0.04, 0.04, 0.03, w * 0.3, -h * 0.2, -dd / 2 - 0.005);
++    ctx.detail(drape, 0.04, 0.04, 0.03, -w * 0.3, -h * 0.2, -dd / 2 - 0.005);
++  }
+   ctx.box('head', w * 1.06, h * 0.42, d * 1.02, 0, y + h * 0.52, m.cz - d * 0.08, ctx.shell, -0.28); // peaked top
+-  ctx.box('head', w * 0.30, h * 0.85, d * 0.85, w * 0.44, y - h * 0.02, m.cz, ctx.shell); // cheeks
+-  ctx.box('head', w * 0.30, h * 0.85, d * 0.85, -w * 0.44, y - h * 0.02, m.cz, ctx.shell);
++  // Phase 2: one outer stud per cheek.
++  for (const side of [1, -1] as const) {
++    const cheek = ctx.box('head', w * 0.30, h * 0.85, d * 0.85, side * w * 0.44, y - h * 0.02, m.cz, ctx.shell);
++    if (cheek) ctx.detail(cheek, 0.03, 0.05, 0.08, side * (w * 0.15 + 0.005), 0, 0);
++  }
+   // the slit glows out of the dark face opening
+-  ctx.box('head', w * 0.55, 0.055, 0.035, 0, y + h * 0.06, m.cz + d * 0.30, ctx.glow);
++  visorSlit(ctx, w * 0.55, y + h * 0.06, m.cz + d * 0.30);
+ }
+ 
+ /** Chest plate shell + trim band (+ optional diagonal sash / chest emblem). */
+@@ -357,11 +581,25 @@ function chestPlate(ctx: VoxelArmorCtx, opts: { sash?: boolean; emblem?: boolean
+   if (!m) return;
+   const w = m.sx * 1.18, h = m.sy * 0.68, d = m.sz * 1.20;
+   const y = m.cy + m.sy * 0.13;
+-  ctx.box('torso', w, h, d, 0, y, m.cz, ctx.shell);
+-  ctx.box('torso', w * 1.03, 0.055, d * 1.03, 0, y - h / 2 + 0.028, m.cz, ctx.trim);
++  const shell = ctx.box('torso', w, h, d, 0, y, m.cz, ctx.shell);
++  // Phase 2: rivets + layered center plate + seam subdividing the shell.
++  if (shell) {
++    faceRivets(ctx, shell, w, h, d);
++    ctx.detail(shell, w * 0.52, h * 0.5, 0.035, 0, 0.01, d / 2 + 0.0075);
++    ctx.detail(shell, w * 0.9, 0.028, 0.03, 0, -h * 0.28, d / 2 + 0.005);
++  }
++  const trim = ctx.box('torso', w * 1.03, 0.055, d * 1.03, 0, y - h / 2 + 0.028, m.cz, ctx.trim);
++  if (trim) {
++    ctx.detail(trim, 0.04, 0.04, 0.03, w * 0.3, 0, (d * 1.03) / 2 + 0.005);
++    ctx.detail(trim, 0.04, 0.04, 0.03, -w * 0.3, 0, (d * 1.03) / 2 + 0.005);
++  }
+   ctx.box('torso', w * 0.5, 0.05, d * 0.5, 0, y + h / 2 - 0.025, m.cz, ctx.dark); // collar recess
+   if (opts.sash) ctx.box('torso', 0.13, h * 1.08, d * 1.04, -0.04, y, m.cz, ctx.trim, 0, 0.62);
+-  if (opts.emblem) ctx.box('torso', 0.11, 0.15, 0.04, 0, y + h * 0.12, m.cz + d / 2 + 0.012, ctx.glow);
++  if (opts.emblem) {
++    const emblem = ctx.box('torso', 0.11, 0.15, 0.04, 0, y + h * 0.12, m.cz + d / 2 + 0.012, ctx.glow);
++    // Phase 2: crossbar turns the emblem dot into a cross.
++    if (emblem) ctx.detail(emblem, 0.16, 0.04, 0.045, 0, 0, 0.005);
++  }
+ }
+ 
+ /** Waist belt + buckle. */
+@@ -369,8 +607,29 @@ function belt(ctx: VoxelArmorCtx) {
+   const m = ctx.measure('torso', 'self');
+   if (!m) return;
+   const y = m.cy - m.sy * 0.34;
+-  ctx.box('torso', m.sx * 1.10, 0.11, m.sz * 1.10, 0, y, m.cz, ctx.dark);
+-  ctx.box('torso', 0.11, 0.085, 0.035, 0, y, m.cz + (m.sz * 1.10) / 2 + 0.012, ctx.trim);
++  const bw = m.sx * 1.10, bd = m.sz * 1.10;
++  const band = ctx.box('torso', bw, 0.11, bd, 0, y, m.cz, ctx.dark);
++  if (band) {
++    ctx.detail(band, 0.04, 0.04, 0.03, m.sx * 0.3, 0, bd / 2 + 0.005);
++    ctx.detail(band, 0.04, 0.04, 0.03, -m.sx * 0.3, 0, bd / 2 + 0.005);
++  }
++  const buckle = ctx.box('torso', 0.11, 0.085, 0.035, 0, y, m.cz + bd / 2 + 0.012, ctx.trim);
++  if (buckle) ctx.detail(buckle, 0.05, 0.05, 0.045, 0, 0, 0.005);
++}
++
++/** Phase 2: stacked layer + rim studs + trim ridge on a pauldron shell. */
++function pauldronDetail(
++  ctx: VoxelArmorCtx, shell: THREE.Mesh | null, trim: THREE.Mesh | null,
++  w: number, d: number, side: number, big: boolean,
++) {
++  if (shell) {
++    ctx.detail(shell, w * 0.62, 0.09, d * 0.62, 0, 0.14, 0);
++    for (const z of [-d * 0.3, 0, d * 0.3]) {
++      ctx.detail(shell, 0.04, 0.03, 0.04, side * (w / 2 - 0.04), 0.12, z);
++    }
++    if (big) ctx.detail(shell, w * 0.4, 0.08, d * 0.4, 0, 0.225, 0);
++  }
++  if (trim) ctx.detail(trim, w * 0.4, 0.03, d * 0.4, 0, 0.04, 0);
+ }
+ 
+ /** Layered shoulder boxes. */
+@@ -380,8 +639,9 @@ function pauldrons(ctx: VoxelArmorCtx, opts: { big?: boolean } = {}) {
+     const m = ctx.measure(pivot, 'shallow');
+     if (!m) continue;
+     const w = m.sx * k, d = m.sz * k;
+-    ctx.box(pivot, w, 0.21, d, side * 0.02, m.cy + 0.07, m.cz, ctx.shell);
+-    ctx.box(pivot, w * 0.62, 0.07, d * 0.62, side * 0.02, m.cy + 0.20, m.cz, ctx.trim);
++    const shell = ctx.box(pivot, w, 0.21, d, side * 0.02, m.cy + 0.07, m.cz, ctx.shell);
++    const trim = ctx.box(pivot, w * 0.62, 0.07, d * 0.62, side * 0.02, m.cy + 0.20, m.cz, ctx.trim);
++    pauldronDetail(ctx, shell, trim, w, d, side, !!opts.big);
+   }
+ }
+ 
+@@ -390,9 +650,17 @@ function greaves(ctx: VoxelArmorCtx) {
+   for (const pivot of ['kneeL', 'kneeR'] as const) {
+     const m = ctx.measure(pivot, 'subtree');
+     if (!m) continue;
+-    const w = m.sx * 1.55, d = m.sz * 1.6;
+-    ctx.box(pivot, w, m.sy * 0.52, d, 0, m.cy - m.sy * 0.10, m.cz + 0.01, ctx.shell);
+-    ctx.box(pivot, w * 1.04, 0.05, d * 1.04, 0, m.cy + m.sy * 0.17, m.cz + 0.01, ctx.trim);
++    const w = m.sx * 1.55, d = m.sz * 1.6, gh = m.sy * 0.52;
++    const shell = ctx.box(pivot, w, gh, d, 0, m.cy - m.sy * 0.10, m.cz + 0.01, ctx.shell);
++    // Phase 2: knee cap + shin seam + lower rivets.
++    if (shell) {
++      ctx.detail(shell, w * 0.5, 0.07, 0.04, 0, gh / 2 - 0.05, d / 2 + 0.01);
++      ctx.detail(shell, 0.035, gh * 0.6, 0.03, 0, -0.02, d / 2 + 0.005);
++      ctx.detail(shell, 0.04, 0.04, 0.03, w / 2 - 0.05, -gh / 2 + 0.05, d / 2 + 0.005);
++      ctx.detail(shell, 0.04, 0.04, 0.03, -(w / 2 - 0.05), -gh / 2 + 0.05, d / 2 + 0.005);
++    }
++    const trim = ctx.box(pivot, w * 1.04, 0.05, d * 1.04, 0, m.cy + m.sy * 0.17, m.cz + 0.01, ctx.trim);
++    if (trim) ctx.detail(trim, 0.04, 0.035, 0.03, 0, 0, (d * 1.04) / 2 + 0.005);
+   }
+ }
+ 
+@@ -401,7 +669,13 @@ function vambraces(ctx: VoxelArmorCtx) {
+   for (const pivot of ['elbowL', 'elbowR'] as const) {
+     const m = ctx.measure(pivot, 'subtree');
+     if (!m) continue;
+-    ctx.box(pivot, m.sx * 1.7, m.sy * 0.48, m.sz * 1.7, 0, m.cy - m.sy * 0.04, m.cz, ctx.dark);
++    const bw = m.sx * 1.7, bh = m.sy * 0.48, bd = m.sz * 1.7;
++    const guard = ctx.box(pivot, bw, bh, bd, 0, m.cy - m.sy * 0.04, m.cz, ctx.dark);
++    // Phase 2: segment bands wrapping the guard.
++    if (guard) {
++      ctx.detail(guard, bw + 0.03, 0.045, bd + 0.03, 0, bh * 0.28, 0);
++      ctx.detail(guard, bw + 0.03, 0.045, bd + 0.03, 0, -bh * 0.28, 0);
++    }
+   }
+ }
+ 
+@@ -410,8 +684,16 @@ function scarf(ctx: VoxelArmorCtx, opts: { flapSide?: number } = {}) {
+   const m = ctx.measure('torso', 'self');
+   if (!m) return;
+   const topY = m.cy + m.sy / 2;
+-  ctx.box('torso', m.sx * 0.78, 0.15, m.sz * 0.85, 0, topY - 0.03, m.cz, ctx.shell);
+-  ctx.box('torso', 0.17, m.sy * 0.42, 0.06, (opts.flapSide ?? 1) * m.sx * 0.20, topY - m.sy * 0.30, m.cz + m.sz * 0.44, ctx.shell);
++  const ww = m.sx * 0.78, wd = m.sz * 0.85;
++  const wrap = ctx.box('torso', ww, 0.15, wd, 0, topY - 0.03, m.cz, ctx.shell);
++  if (wrap) {
++    ctx.detail(wrap, 0.035, 0.035, 0.03, m.sx * 0.25, 0, wd / 2 + 0.005);
++    ctx.detail(wrap, 0.035, 0.035, 0.03, -m.sx * 0.25, 0, wd / 2 + 0.005);
++  }
++  const fh = m.sy * 0.42;
++  const flap = ctx.box('torso', 0.17, fh, 0.06, (opts.flapSide ?? 1) * m.sx * 0.20, topY - m.sy * 0.30, m.cz + m.sz * 0.44, ctx.shell);
++  // Phase 2: hem strip segmenting the hanging flap.
++  if (flap) ctx.detail(flap, 0.15, 0.035, 0.07, 0, -fh / 2 + 0.03, 0.005);
+ }
+ 
+ /** Tattered tabard flaps hanging from the belt (raider). */
+@@ -419,9 +701,16 @@ function tabard(ctx: VoxelArmorCtx) {
+   const m = ctx.measure('torso', 'self');
+   if (!m) return;
+   const y = m.cy - m.sy * 0.34;
+-  ctx.box('torso', m.sx * 0.42, 0.36, 0.06, 0, y - 0.24, m.cz + m.sz * 0.52, ctx.shell);
+-  ctx.box('torso', 0.06, 0.30, m.sz * 0.40, m.sx * 0.50, y - 0.20, m.cz, ctx.shell);
+-  ctx.box('torso', 0.06, 0.30, m.sz * 0.40, -m.sx * 0.50, y - 0.20, m.cz, ctx.shell);
++  const front = ctx.box('torso', m.sx * 0.42, 0.36, 0.06, 0, y - 0.24, m.cz + m.sz * 0.52, ctx.shell);
++  // Phase 2: hem studs on the front flap.
++  if (front) {
++    ctx.detail(front, 0.04, 0.04, 0.03, m.sx * 0.12, -0.13, 0.035);
++    ctx.detail(front, 0.04, 0.04, 0.03, -m.sx * 0.12, -0.13, 0.035);
++  }
++  for (const side of [1, -1] as const) {
++    const flap = ctx.box('torso', 0.06, 0.30, m.sz * 0.40, side * m.sx * 0.50, y - 0.20, m.cz, ctx.shell);
++    if (flap) ctx.detail(flap, 0.03, 0.04, 0.04, side * 0.035, 0, 0);
++  }
+ }
+ 
+ /** Slot gate: run fn only when building the full set or the matching slot. */
+@@ -873,8 +1162,17 @@ function spikedPauldrons(ctx: VoxelArmorCtx, opts: { big?: boolean } = {}) {
+     if (!m) continue;
+     const w = m.sx * k, d = m.sz * k;
+     const y = m.cy + 0.08;
+-    ctx.box(pivot, w, 0.24, d, side * 0.02, y, m.cz, ctx.shell);
+-    ctx.box(pivot, w * 0.6, 0.07, d * 0.6, side * 0.02, y + 0.15, m.cz, ctx.trim);
++    const shell = ctx.box(pivot, w, 0.24, d, side * 0.02, y, m.cz, ctx.shell);
++    const trim = ctx.box(pivot, w * 0.6, 0.07, d * 0.6, side * 0.02, y + 0.15, m.cz, ctx.trim);
++    // Phase 2: layered plate + rim studs under the spikes (cones untouched).
++    if (shell) {
++      ctx.detail(shell, w * 0.62, 0.09, d * 0.62, 0, 0.155, 0);
++      for (const z of [-d * 0.3, 0, d * 0.3]) {
++        ctx.detail(shell, 0.04, 0.03, 0.04, side * (w / 2 - 0.04), 0.135, z);
++      }
++      if (opts.big) ctx.detail(shell, w * 0.4, 0.08, d * 0.4, 0, 0.24, 0);
++    }
++    if (trim) ctx.detail(trim, w * 0.4, 0.03, d * 0.4, 0, 0.04, 0);
+     const heights = [0.36, 0.46, 0.32];
+     for (let i = 0; i < 3; i++) {
+       const t = i / 2; // 0 = inner … 1 = outer

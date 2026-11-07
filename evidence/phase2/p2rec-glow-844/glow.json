@@ -1,0 +1,23 @@
+{
+  "config": "844x390",
+  "touch": false,
+  "shots": [
+    {
+      "t": 1,
+      "centerLuma": 0.2069
+    },
+    {
+      "t": 3,
+      "centerLuma": 0.207
+    },
+    {
+      "t": 8,
+      "centerLuma": 0.207
+    },
+    {
+      "t": 30,
+      "centerLuma": 0.207
+    }
+  ],
+  "errors": []
+}

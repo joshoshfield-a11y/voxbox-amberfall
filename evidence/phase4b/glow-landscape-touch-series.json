@@ -1,0 +1,82 @@
+{
+  "run": "landscape-touch",
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "touchCaps": {
+    "ontouchstart": true,
+    "maxTouchPoints": 1,
+    "coarsePointer": true
+  },
+  "promptBefore": "none",
+  "promptAfter": "none",
+  "dismissMethod": "none-required",
+  "series": [
+    {
+      "t": "0s",
+      "fullLuma": 0.2944,
+      "centerLuma": 0.2656,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.2061,
+      "width": 844,
+      "height": 390,
+      "state": "playing",
+      "frame": 27,
+      "quality": "standard"
+    },
+    {
+      "t": "1s",
+      "fullLuma": 0.2943,
+      "centerLuma": 0.2655,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.206,
+      "width": 844,
+      "height": 390,
+      "state": "playing",
+      "frame": 48,
+      "quality": "standard"
+    },
+    {
+      "t": "3s",
+      "fullLuma": 0.2943,
+      "centerLuma": 0.2656,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.206,
+      "width": 844,
+      "height": 390,
+      "state": "playing",
+      "frame": 73,
+      "quality": "standard"
+    },
+    {
+      "t": "8s",
+      "fullLuma": 0.2942,
+      "centerLuma": 0.2655,
+      "centerBlowout": 0,
+      "heroScreen": {
+        "x": 422,
+        "y": 235
+      },
+      "heroBoxLuma": 0.2058,
+      "width": 844,
+      "height": 390,
+      "state": "playing",
+      "frame": 98,
+      "quality": "standard"
+    }
+  ],
+  "errors": []
+}

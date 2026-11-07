@@ -1,0 +1,147 @@
+{
+  "tag": "phone-landscape",
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "errors": [],
+  "snap": {
+    "state": "playing",
+    "specName": "Ancient Realm",
+    "specEnv": "ruins",
+    "specTod": "dusk",
+    "objective": {
+      "type": "eliminate",
+      "count": 6,
+      "timeLimit": 0,
+      "description": "Eliminate 6 hostiles",
+      "stages": [
+        {
+          "id": "shards",
+          "type": "collect",
+          "count": 14,
+          "timeLimit": 0,
+          "description": "Chapter I — Gather the shards"
+        },
+        {
+          "id": "break",
+          "type": "eliminate",
+          "count": 6,
+          "timeLimit": 0,
+          "description": "Chapter II — Clear the field — the last of them flee. Let them go, or hunt them down?",
+          "choices": [
+            {
+              "label": "Take the high road",
+              "next": "beacon"
+            },
+            {
+              "label": "Hunt the stragglers",
+              "next": "hunt"
+            }
+          ]
+        },
+        {
+          "id": "beacon",
+          "type": "reach",
+          "count": 0,
+          "timeLimit": 0,
+          "next": [],
+          "description": "Chapter III — Reach the beacon",
+          "winText": "You let them run. The beacon flares — Ancient Realm is crossed."
+        },
+        {
+          "id": "hunt",
+          "type": "eliminate",
+          "count": 1,
+          "timeLimit": 0,
+          "next": [],
+          "description": "Chapter III — Hunt the stragglers",
+          "winText": "No stragglers left. The beacon flares over a quiet field — Ancient Realm is crossed."
+        }
+      ]
+    },
+    "blueprintKeys": [
+      "avatar",
+      "enemies",
+      "skills",
+      "skillsPanel",
+      "bestiary",
+      "bestiaryPanel",
+      "achievements",
+      "achievementsPanel",
+      "npcs",
+      "vendors",
+      "gathering",
+      "stations",
+      "stationSession",
+      "gatheringSession",
+      "talkSession",
+      "quests",
+      "questTracker",
+      "pickups",
+      "objectives",
+      "assets",
+      "itemKit",
+      "itemWorld",
+      "bosses",
+      "bossBar",
+      "worldBoss",
+      "prog",
+      "wallet",
+      "shopPanel",
+      "vendorDefs",
+      "events",
+      "eventSession",
+      "tradePanel",
+      "weather",
+      "hazards",
+      "deployables",
+      "companions",
+      "companionPanel",
+      "camp",
+      "campSession",
+      "mounts",
+      "mountsPanel",
+      "standings",
+      "standingsPanel",
+      "dialogueEngine",
+      "dialogueState",
+      "abilities",
+      "abilityBar",
+      "radiantBoard",
+      "radiantBoardPanel",
+      "timedBoard",
+      "timedBoardPanel"
+    ],
+    "found": {
+      "npcs.list": 8,
+      "vendors.list": 3,
+      "gathering.list": 30,
+      "stations.list": 4,
+      "quests.quests": 17,
+      "pickups.list": 24
+    },
+    "enemiesTotal": 6,
+    "enemiesAlive": 6,
+    "pickupsTotal": 24,
+    "pickupsByKind": {
+      "coin": 14,
+      "health": 4,
+      "powerup": 6
+    },
+    "playerPos": null,
+    "calls": 654,
+    "triangles": 1332862,
+    "hudText": " INTEGRITY BOOST ANCIENT REALM Chapter I — Gather the shards 0 / 14 collected · Ch.1 0 SCORE 0 SCRAP 0:00.5 ♥♥♥ ANCIENT REALM WASD move · mouse look · LMB attack · Space jump · Shift dash/sprint · G deploy · Esc pause SNEAKING 📷 PHOTO (O)STEP 1/7 — MOVEMove with WASD or the arrow keysSKIP TUTORIAL",
+    "buttons": [
+      "📷 PHOTO (O)",
+      "SKIP TUTORIAL"
+    ],
+    "overlays": [
+      "panel bars",
+      "panel objective",
+      "panel score"
+    ],
+    "titleText": "Ancient Realm — XANDRIA"
+  }
+}

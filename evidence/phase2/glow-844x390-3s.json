@@ -1,0 +1,9 @@
+{
+  "heroScreen": {
+    "x": 422,
+    "y": 235
+  },
+  "sneaking": false,
+  "sneakChipDisplay": "none",
+  "state": "playing"
+}

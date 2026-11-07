@@ -1,0 +1,132 @@
+{
+  "config": "844x390",
+  "tag": "before",
+  "samples": [
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    },
+    {
+      "calls": 670,
+      "triangles": 1652862,
+      "geometries": 373,
+      "instancedMeshes": 237,
+      "instances": 137379,
+      "buckets": 197,
+      "populatedMeshes": 233,
+      "visibleInstancedMeshes": 235
+    }
+  ],
+  "median": {
+    "calls": 670,
+    "triangles": 1652862,
+    "geometries": 373,
+    "instancedMeshes": 237,
+    "instances": 137379,
+    "buckets": 197,
+    "populatedMeshes": 233,
+    "visibleInstancedMeshes": 235
+  },
+  "ranges": {
+    "calls": [
+      670,
+      670
+    ],
+    "triangles": [
+      1652862,
+      1652862
+    ],
+    "geometries": [
+      373,
+      373
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      137379,
+      137379
+    ],
+    "buckets": [
+      197,
+      197
+    ],
+    "populatedMeshes": [
+      233,
+      233
+    ],
+    "visibleInstancedMeshes": [
+      235,
+      235
+    ]
+  },
+  "consoleErrors": [],
+  "screenshot": "before-844x390.png"
+}

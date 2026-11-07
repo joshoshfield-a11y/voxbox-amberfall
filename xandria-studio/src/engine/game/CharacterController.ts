@@ -1,0 +1,409 @@
+/**
+ * CharacterController — capsule + camera-relative movement, jump w/ coyote time, double jump,
+ * dash, sprint, glide. Drives a CharacterRig visual. The reference controller all
+ * humanoid blueprints build on.
+ */
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
+import type { Engine } from '../Engine';
+import { toV3 } from '../core/Physics';
+import { surfaceProps, type SurfaceProps, type SurfaceProvider } from '../physics/Surfaces';
+import { wadingState, SplashDetector } from '../physics/Water';
+import { AnimationAdjust } from '../physics/AnimationAdjust';
+import { makeHumanoid, type CharacterRig } from '../gfx/Characters';
+import { resolveSkinDef, applySkin, skinOptionsForSpec } from '../gfx/Skins';
+import { clearVoxelArmor, clearVoxelCape } from '../gfx/VoxelArmor';
+import { loadProfile } from './Profile';
+import { STEALTH_TABLE } from './stealth';
+import { applyCosmeticsToRig, type CosmeticSelection } from './cosmetics';
+import { loadRigFromURL, type BoneMapping } from '../gfx/RigAdapter';
+import type { PlayerSpec } from '@spec';
+
+export interface ControllerEvents {
+  onJump?: () => void;
+  onLand?: (impact: number) => void;
+  onDash?: () => void;
+  onStep?: () => void;
+}
+
+export class CharacterController {
+  body: CANNON.Body;
+  rig: CharacterRig;
+  yaw = 0;
+  grounded = false;
+  private coyote = 0;
+  private jumps = 0;
+  private dashCd = 0;
+  private dashT = 0;
+  private dashDir = new THREE.Vector3();
+  attackT = -1; // 0..1 swing progress, -1 idle
+  attacking = false;
+  speedBoostT = 0;
+  /**
+   * UPGRADE LOOP (mounts): multiplicative speed scalar set per frame by
+   * the blueprint's mount manager (1 when dismounted/exhausted, the
+   * mount's table value otherwise). The ONLY movement effect mounts
+   * have — it stacks with sprint/boost exactly like speedBoostT does.
+   */
+  speedScalar = 1;
+  /** set each frame by the blueprint from the active camera rig — movement is camera-relative */
+  camYaw = 0;
+  private stepAcc = 0;
+  private wasGrounded = true;
+  /** physics wave: current ground surface id (data-driven, see physics/Surfaces) */
+  surfaceId = 'stone';
+  /** physics wave: footstep FX tag for the current surface */
+  footstepFX: SurfaceProps['footstepFX'] = 'dust';
+  /** physics wave: true when wading (feet wet, head dry) */
+  wading = false;
+  /** physics wave: 0..1 submerged fraction of the capsule */
+  submerged = 0;
+  /** physics wave: smoothed planar acceleration (m/s²) — feeds the animation post-pass */
+  planarAccel = 0;
+  private planarSpeed = 0;
+  /** set by the blueprint when a weapon is equipped — drives the carry-arm pose */
+  weaponCarry = false;
+  private prevYaw = 0;
+  private prevPlanar = 0;
+  private brakeSm = 0;
+  private adjustN = new THREE.Vector3(0, 1, 0);
+  private splash = new SplashDetector();
+  private tmpV = new THREE.Vector3();
+  /** landing squash (polish wave): 1→0 progress + impact-scaled depth, fed to rig.animate as `land` */
+  private landT = 0;
+  private landDepth = 0;
+  /**
+   * UPGRADE LOOP (stealth-system): hold-to-sneak state, player-scoped.
+   * Read fresh from input every physics step (hold Ctrl / SNEAK touch
+   * button). Sneaking halves move speed (STEALTH_TABLE), silences
+   * movement noise, and shrinks enemy detection radius. Not persisted:
+   * holding the key IS the state. No rig crouch pose exists (the rig
+   * has no crouch channel) — the HUD chip is the sneak read.
+   */
+  sneaking = false;
+  /** true while a dash burst is running (feeds the noise model). */
+  get dashing(): boolean { return this.dashT > 0; }
+
+  constructor(
+    private engine: Engine,
+    private spec: PlayerSpec,
+    spawn: THREE.Vector3,
+    colors: { skin?: string; shirt?: string; pants?: string; accent?: string } = {},
+    private events: ControllerEvents = {},
+  ) {
+    this.body = engine.physics.capsule(0.42, 1.7, [spawn.x, spawn.y + 1.2, spawn.z], { mass: 70 });
+    this.rig = makeHumanoid(engine.mats, colors, engine.spec.meta.seed, engine.spec.custom?.forge);
+    // UPGRADE LOOP (character-customization): snapshot the construction look
+    // BEFORE any skin/cosmetic mutation, so applyCosmetics() can reset to
+    // this exact base and re-apply (live changes never stack or smear).
+    this.snapshotBaseLook();
+    // DE — character customization: an explicit spec skin wins over the
+    // palette-derived `colors` param; an import-model URL swaps the rig async.
+    const slot = engine.spec.custom?.characters?.player;
+    const skinDef = resolveSkinDef(engine.spec, slot?.skin);
+    if (skinDef) applySkin(this.rig, skinDef, skinOptionsForSpec(engine.spec));
+    // Player cosmetics (Profile, per save slot) win over the spec skin —
+    // the player's own look is theirs, not the spec author's. Identity
+    // default (no cosmetics chosen) changes nothing.
+    this.applyCosmetics();
+    engine.scene.add(this.rig.group);
+    if (slot?.model) void this.swapToModel(slot.model, slot.boneMap);
+    engine.physics.addStepHandler((dt) => this.fixedUpdate(dt));
+  }
+
+  /**
+   * Async import-model swap (workstream E phase 1). The procedural rig is the
+   * floor: it stays live while the GLB loads, and stays permanently on any
+   * load failure. The skin (if any) is re-applied — a no-op on imported rigs
+   * since their materials carry no role tags.
+   */
+  /**
+   * UPGRADE LOOP (character-customization): construction-time role-material
+   * snapshot (color/emissive/roughness/metalness/map per role). applyCosmetics
+   * restores this before re-applying, so live changes are exact, never
+   * layered on top of the previous look.
+   */
+  private baseLook: Map<string, {
+    color: number; emissive: number; emissiveIntensity: number;
+    roughness: number; metalness: number; map: THREE.Texture | null;
+  }> = new Map();
+
+  private snapshotBaseLook(): void {
+    try {
+      this.rig.group.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (!m.isMesh) return;
+        const mats = Array.isArray(m.material) ? m.material : [m.material];
+        for (const mm of mats) {
+          const mat = mm as THREE.MeshStandardMaterial;
+          const role = mat?.userData?.role;
+          if (!mat?.userData?.owned || typeof role !== 'string' || this.baseLook.has(role)) continue;
+          this.baseLook.set(role, {
+            color: (mat.color as THREE.Color).getHex(),
+            emissive: (mat.emissive as THREE.Color).getHex(),
+            emissiveIntensity: mat.emissiveIntensity,
+            roughness: mat.roughness,
+            metalness: mat.metalness,
+            map: (mat.map as THREE.Texture | null) ?? null,
+          });
+        }
+      });
+    } catch { /* snapshot failure → applyCosmetics still applies on top */ }
+  }
+
+  /**
+   * Re-apply the player's cosmetics to this rig, exactly: restore the
+   * construction look, re-apply the spec skin (if any), then the Profile
+   * cosmetics. Cosmetics never touch stats, hitboxes, or behavior — this
+   * method only mutates rig materials/cape pieces. Never throws.
+   */
+  applyCosmetics(selection?: CosmeticSelection): void {
+    try {
+      // restore construction look
+      this.rig.group.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (!m.isMesh) return;
+        const mats = Array.isArray(m.material) ? m.material : [m.material];
+        for (const mm of mats) {
+          const mat = mm as THREE.MeshStandardMaterial;
+          const role = mat?.userData?.role;
+          if (!mat?.userData?.owned || typeof role !== 'string') continue;
+          const snap = this.baseLook.get(role);
+          if (!snap) continue;
+          try {
+            (mat.color as THREE.Color).setHex(snap.color);
+            (mat.emissive as THREE.Color).setHex(snap.emissive);
+            mat.emissiveIntensity = snap.emissiveIntensity;
+            mat.roughness = snap.roughness;
+            mat.metalness = snap.metalness;
+            mat.map = snap.map;
+            mat.needsUpdate = true;
+          } catch { /* per-material failure is decorative */ }
+        }
+      });
+      clearVoxelArmor(this.rig, undefined, 'skin');
+      clearVoxelCape(this.rig, 'skin');
+      const slot = this.engine.spec.custom?.characters?.player;
+      const skinDef = resolveSkinDef(this.engine.spec, slot?.skin);
+      if (skinDef) applySkin(this.rig, skinDef, skinOptionsForSpec(this.engine.spec));
+      let sel = selection;
+      if (!sel) {
+        try { sel = loadProfile().cosmetics; } catch { sel = undefined; }
+      }
+      if (sel) applyCosmeticsToRig(this.rig, sel, this.engine.spec);
+    } catch { /* cosmetics never break the run */ }
+  }
+
+  private async swapToModel(url: string, boneMap?: BoneMapping) {
+    const rig = await loadRigFromURL(url, boneMap);
+    if (!rig) return; // procedural fallback stands
+    const skinDef = resolveSkinDef(this.engine.spec, this.engine.spec.custom?.characters?.player?.skin);
+    if (skinDef) applySkin(rig, skinDef, skinOptionsForSpec(this.engine.spec));
+    const old = this.rig;
+    this.engine.scene.remove(old.group);
+    old.dispose();
+    this.rig = rig;
+    this.engine.scene.add(rig.group);
+    // Imported rigs carry no role tags, so this is a no-op there — kept
+    // for path uniformity (a future tagged import gets cosmetics).
+    this.applyCosmetics();
+  }
+
+  get position(): THREE.Vector3 { return toV3(this.body.position); }
+  get velocity(): THREE.Vector3 { return toV3(this.body.velocity); }
+
+  teleport(p: THREE.Vector3) {
+    this.body.position.set(p.x, p.y, p.z);
+    this.body.velocity.setZero();
+    this.engine.physics.snapInterp(this.body);
+  }
+
+  private fixedUpdate(dt: number) {
+    const input = this.engine.input;
+    const b = this.body;
+    const camYaw = this.camYaw;
+
+    // movement intent in camera space
+    const ax = input.axes;
+    // UPGRADE LOOP (stealth-system): hold-to-sneak. Sneaking disables
+    // sprint and halves speed; the state is re-read every step.
+    this.sneaking = input.pressed('sneak');
+    const run = !this.sneaking && this.spec.abilities.includes('sprint') && input.pressed('sprint');
+    const boost = this.speedBoostT > 0 ? 1.5 : 1;
+    let targetSpeed = this.spec.speed * (run ? 1.65 : 1) * boost * this.speedScalar
+      * (this.sneaking ? STEALTH_TABLE.sneakSpeedMultiplier : 1);
+
+    const sin = Math.sin(camYaw), cos = Math.cos(camYaw);
+    const dir = new THREE.Vector3(ax.x * cos - ax.y * sin, 0, -ax.x * sin - ax.y * cos);
+    // NOTE: forward (−z at yaw 0) mapped so W walks away from camera
+    const moving = dir.lengthSq() > 0.001;
+
+    // ground probe
+    const from = new THREE.Vector3(b.position.x, b.position.y + 0.2, b.position.z);
+    const hit = this.engine.physics.raycast(from, from.clone().add(new THREE.Vector3(0, -1.45, 0)), -1, b);
+    this.grounded = !!hit;
+    if (this.grounded) { this.coyote = 0.12; this.jumps = 0; }
+    else this.coyote -= dt;
+
+    if (this.grounded && !this.wasGrounded) {
+      const impact = Math.abs(b.velocity.y);
+      this.events.onLand?.(impact);
+      // animation hook: brief squash-and-stretch on land, depth scaled by impact
+      this.landT = 1;
+      this.landDepth = THREE.MathUtils.clamp(impact / 12, 0.3, 1);
+    }
+    this.wasGrounded = this.grounded;
+
+    // ---- physics wave: surface-dependent movement + water (additive) ----
+    // Data-driven: the terrain reports a surface id; we only multiply the
+    // existing accel/stop terms. Default 'stone' keeps the shipped feel.
+    const terr = this.engine.terrain as unknown as SurfaceProvider | undefined;
+    let surfId = 'stone';
+    let wlvl: number | null = null;
+    if (terr && typeof terr.surfaceAt === 'function') {
+      surfId = terr.surfaceAt(b.position.x, b.position.z);
+      if (typeof terr.waterLevelAt === 'function') wlvl = terr.waterLevelAt(b.position.x, b.position.z);
+    }
+    const surf = surfaceProps(surfId);
+    this.surfaceId = surfId;
+    this.footstepFX = surf.footstepFX;
+    // water: submerged fraction of the capsule, splash edges, wading drag
+    const ws = wadingState(b.position.y, 0.85, wlvl);
+    this.submerged = ws.submerged;
+    this.wading = ws.wading;
+    const edge = this.splash.update(ws.submerged);
+    if (edge) {
+      _splashV.set(b.position.x, wlvl ?? b.position.y, b.position.z);
+      this.engine.particles.burst(_splashV, {
+        count: edge === 'enter' ? 22 : 12,
+        color: '#cfeaff', color2: '#5aa7e0', speed: 3.2, life: 0.7,
+        size: 1.9, gravity: 6, up: 3.2, blending: 'normal',
+      });
+    }
+    const wadeK = ws.submerged > 0.02 ? 1 - 0.6 * Math.min(1, ws.submerged * 1.5) : 1;
+    targetSpeed *= wadeK;
+
+    // dash
+    this.dashCd -= dt;
+    if (this.spec.abilities.includes('dash') && input.justPressed('dash') && this.dashCd <= 0) {
+      this.dashCd = 1.4;
+      this.dashT = 0.22;
+      this.dashDir.copy(moving ? dir : new THREE.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw)).multiplyScalar(-1));
+      this.events.onDash?.();
+    }
+
+    // horizontal velocity
+    const cur = new THREE.Vector3(b.velocity.x, 0, b.velocity.z);
+    if (this.dashT > 0) {
+      this.dashT -= dt;
+      const dv = this.dashDir.clone().normalize().multiplyScalar(this.spec.speed * 3.4);
+      b.velocity.x = dv.x; b.velocity.z = dv.z;
+    } else if (moving) {
+      dir.normalize();
+      const want = dir.multiplyScalar(targetSpeed);
+      // physics wave: surface accel multiplier + traction on the damp rate,
+      // wading drag on top. 'stone' + dry keeps the shipped numbers exactly.
+      const accel = (this.grounded ? 40 : 14) * surf.accelMul * (0.45 + 0.55 * wadeK);
+      const grip = 0.5 + 0.5 * surf.traction;
+      cur.x = THREE.MathUtils.damp(cur.x, want.x, (accel / 8) * grip, dt);
+      cur.z = THREE.MathUtils.damp(cur.z, want.z, (accel / 8) * grip, dt);
+      b.velocity.x = cur.x; b.velocity.z = cur.z;
+      this.yaw = Math.atan2(want.x, want.z);
+      // footsteps
+      if (this.grounded) {
+        this.stepAcc += cur.length() * dt;
+        if (this.stepAcc > 2.2) { this.stepAcc = 0; this.events.onStep?.(); }
+      }
+    } else if (this.grounded) {
+      b.velocity.x = THREE.MathUtils.damp(b.velocity.x, 0, 12 * surf.stopMul, dt);
+      b.velocity.z = THREE.MathUtils.damp(b.velocity.z, 0, 12 * surf.stopMul, dt);
+      // physics wave: extra water drag when standing in water
+      if (wadeK < 1) {
+        const wd = Math.max(0, 1 - 3 * (1 - wadeK) * dt);
+        b.velocity.x *= wd; b.velocity.z *= wd;
+      }
+    }
+
+    // physics wave: smoothed planar acceleration for the animation post-pass
+    {
+      const nv = Math.hypot(b.velocity.x, b.velocity.z);
+      const inst = Math.abs(nv - this.planarSpeed) / Math.max(dt, 1e-4);
+      this.planarSpeed = nv;
+      this.planarAccel += (inst - this.planarAccel) * Math.min(1, dt * 8);
+    }
+
+    // jump
+    const maxJumps = this.spec.abilities.includes('doubleJump') ? 2 : 1;
+    if (input.justPressed('jump')) {
+      if (this.coyote > 0 || this.jumps < maxJumps) {
+        if (this.coyote <= 0) this.jumps++;
+        else this.jumps = 1;
+        b.velocity.y = this.spec.jump;
+        this.coyote = 0;
+        this.events.onJump?.();
+      }
+    }
+    // glide
+    if (this.spec.abilities.includes('glide') && !this.grounded && b.velocity.y < -2 && input.pressed('jump')) {
+      b.velocity.y = Math.max(b.velocity.y, -2.2);
+    }
+    if (this.speedBoostT > 0) this.speedBoostT -= dt;
+  }
+
+  /** per-render-frame update: visuals (position is render-interpolated; sim logic keeps raw body transforms) */
+  update(dt: number, t: number) {
+    const p = this.engine.physics.interpolatedPosition(this.body, this.tmpV);
+    this.rig.group.position.set(p.x, p.y - 0.85, p.z);
+    // FIX1 (D-037): face movement yaw. The humanoid model faces +Z
+    // (visor band centered on +Z, eyes and boot toes at +Z, cape and
+    // backpack at -Z), so the facing rotation IS the travel yaw. The
+    // old `this.yaw + Math.PI` turned the model exactly opposite its
+    // travel — the reported moonwalk (face toward camera while walking
+    // away). tpAction's camYaw +PI offset is untouched: it makes the
+    // movement direction itself correct away from the camera.
+    const targetRot = this.yaw;
+    let d = targetRot - this.rig.group.rotation.y;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    this.rig.group.rotation.y += d * Math.min(1, dt * 14);
+    const v = this.velocity;
+    const planar = Math.hypot(v.x, v.z);
+    if (this.landT > 0) this.landT = Math.max(0, this.landT - dt * 4.5); // ~0.22s squash
+    this.rig.animate(t, planar, {
+      attacking: this.attackT >= 0 ? 1 - this.attackT : 0,
+      land: this.landT * this.landDepth,
+    });
+    // physics wave (item 7): procedural animation post-pass, layered over animate().
+    // Clamped and bounded per-frame (M1 2026-10-19: absolute assignment, not
+    // accumulation — the old additive lean integrated to 9.8 rad).
+    {
+      const inst = dt > 1e-4 ? (planar - this.prevPlanar) / dt : 0;
+      this.prevPlanar = planar;
+      this.brakeSm += (Math.max(0, -inst) - this.brakeSm) * Math.min(1, dt * 8);
+      let dy = this.yaw - this.prevYaw;
+      while (dy > Math.PI) dy -= Math.PI * 2;
+      while (dy < -Math.PI) dy += Math.PI * 2;
+      const turnRate = dt > 1e-4 ? dy / dt : 0;
+      this.prevYaw = this.yaw;
+      const terr = this.engine.terrain as { normalAt?: (x: number, z: number) => THREE.Vector3 } | undefined;
+      const n = terr?.normalAt ? this.adjustN.copy(terr.normalAt(p.x, p.z)) : undefined;
+      AnimationAdjust.apply(this.rig, {
+        slopeNormal: n,
+        accel: Math.max(0, inst),
+        brake: this.brakeSm,
+        turnRate,
+        weaponCarry: this.weaponCarry,
+        attacking: this.attackT >= 0,
+      });
+    }
+    if (this.attackT >= 0) {
+      this.attackT -= dt * 3.4;
+      if (this.attackT < 0) this.attackT = -1;
+    }
+  }
+
+  swing() { this.attackT = 1; }
+}
+
+/** physics wave: splash-particle scratch (hot path stays allocation-free) */
+const _splashV = new THREE.Vector3();

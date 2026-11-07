@@ -1,0 +1,20 @@
+{
+  "pick": {
+    "id": "npc-eb3bdb13-0",
+    "role": "villager",
+    "vendorId": null,
+    "pos": {
+      "x": -1983.4172737947486,
+      "y": -1.94442042439443,
+      "z": -3753.0464568528128
+    }
+  },
+  "before": {
+    "prompted": "npc-afaa2a86-10",
+    "promptedRole": "merchant",
+    "promptedVendor": "vendor_ember_vial",
+    "pillText": "[E] Trade with Vex"
+  },
+  "opened": null,
+  "errors": []
+}

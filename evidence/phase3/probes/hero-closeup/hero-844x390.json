@@ -1,0 +1,25 @@
+{
+  "tag": "844x390",
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "photoBtn": "📷 PHOTO (O)",
+  "orbit0": {
+    "active": true,
+    "orbit": {
+      "yaw": 3.141592653589793,
+      "pitch": 0.41765309409406837,
+      "distance": 7.788761052174348
+    }
+  },
+  "orbit1": {
+    "active": true,
+    "orbit": {
+      "yaw": 3.141592653589793,
+      "pitch": 0.25,
+      "distance": 3
+    }
+  },
+  "errors": []
+}

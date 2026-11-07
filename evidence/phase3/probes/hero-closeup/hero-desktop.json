@@ -1,0 +1,25 @@
+{
+  "tag": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "photoBtn": "📷 PHOTO (O)",
+  "orbit0": {
+    "active": true,
+    "orbit": {
+      "yaw": 3.141592653589793,
+      "pitch": 0.4176530941963269,
+      "distance": 7.788761052527789
+    }
+  },
+  "orbit1": {
+    "active": true,
+    "orbit": {
+      "yaw": 3.141592653589793,
+      "pitch": 0.25,
+      "distance": 3
+    }
+  },
+  "errors": []
+}

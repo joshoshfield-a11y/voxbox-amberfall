@@ -1,0 +1,554 @@
+{
+  "config": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "touch": false,
+  "tutorial": {
+    "objective": {
+      "x": 16,
+      "y": 16,
+      "w": 202,
+      "h": 84,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "score": {
+      "x": 1194,
+      "y": 16,
+      "w": 70,
+      "h": 146,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bars": {
+      "x": 16,
+      "y": 639,
+      "w": 270,
+      "h": 65,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "hint": {
+      "x": 381,
+      "y": 675,
+      "w": 519,
+      "h": 27,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "tutcard": {
+      "x": 498,
+      "y": 562,
+      "w": 285,
+      "h": 94,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "abilitybar": {
+      "x": 468,
+      "y": 598,
+      "w": 343,
+      "h": 58,
+      "display": "flex",
+      "visibility": "visible",
+      "visible": true
+    },
+    "sneakchip": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "photochip": {
+      "x": 16,
+      "y": 160,
+      "w": 118,
+      "h": 32,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "standings": {
+      "x": 16,
+      "y": 150,
+      "w": 204,
+      "h": 130,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "tracker": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "minimap": {
+      "x": 1054,
+      "y": 460,
+      "w": 210,
+      "h": 244,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "skillsChip": {
+      "x": 1194,
+      "y": 12,
+      "w": 74,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bestiaryChip": {
+      "x": 1175,
+      "y": 52,
+      "w": 93,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "achievementsChip": {
+      "x": 1224,
+      "y": 52,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "mountsChip": {
+      "x": 1185,
+      "y": 56,
+      "w": 83,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "companionsChip": {
+      "x": 1152,
+      "y": 92,
+      "w": 116,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "fastTravelChip": {
+      "x": 12,
+      "y": 338,
+      "w": 76,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "atlasChip": {
+      "x": 12,
+      "y": 390,
+      "w": 88,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "radiantChip": {
+      "x": 12,
+      "y": 338,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "timedChip": {
+      "x": 12,
+      "y": 388,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bossbar": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "toast": {
+      "x": 545,
+      "y": 130,
+      "w": 189,
+      "h": 27,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    }
+  },
+  "rest": {
+    "objective": {
+      "x": 16,
+      "y": 16,
+      "w": 202,
+      "h": 84,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "score": {
+      "x": 1194,
+      "y": 16,
+      "w": 70,
+      "h": 146,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bars": {
+      "x": 16,
+      "y": 639,
+      "w": 270,
+      "h": 65,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "hint": {
+      "x": 381,
+      "y": 675,
+      "w": 519,
+      "h": 27,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "tutcard": null,
+    "abilitybar": {
+      "x": 468,
+      "y": 598,
+      "w": 343,
+      "h": 58,
+      "display": "flex",
+      "visibility": "visible",
+      "visible": true
+    },
+    "sneakchip": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "photochip": {
+      "x": 16,
+      "y": 160,
+      "w": 118,
+      "h": 32,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "standings": {
+      "x": 16,
+      "y": 150,
+      "w": 204,
+      "h": 130,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "tracker": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "minimap": {
+      "x": 1054,
+      "y": 460,
+      "w": 210,
+      "h": 244,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "skillsChip": {
+      "x": 1194,
+      "y": 12,
+      "w": 74,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bestiaryChip": {
+      "x": 1175,
+      "y": 52,
+      "w": 93,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "achievementsChip": {
+      "x": 1224,
+      "y": 52,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "mountsChip": {
+      "x": 1185,
+      "y": 56,
+      "w": 83,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "companionsChip": {
+      "x": 1152,
+      "y": 92,
+      "w": 116,
+      "h": 33,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "fastTravelChip": {
+      "x": 12,
+      "y": 338,
+      "w": 76,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "atlasChip": {
+      "x": 12,
+      "y": 390,
+      "w": 88,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "radiantChip": {
+      "x": 12,
+      "y": 338,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "timedChip": {
+      "x": 12,
+      "y": 388,
+      "w": 44,
+      "h": 44,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    },
+    "bossbar": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "visibility": "visible",
+      "visible": false
+    },
+    "toast": {
+      "x": 539,
+      "y": 130,
+      "w": 201,
+      "h": 27,
+      "display": "block",
+      "visibility": "visible",
+      "visible": true
+    }
+  },
+  "overlapsTutorial": [
+    [
+      "score",
+      "skillsChip",
+      70,
+      29
+    ],
+    [
+      "score",
+      "bestiaryChip",
+      70,
+      33
+    ],
+    [
+      "score",
+      "achievementsChip",
+      40,
+      44
+    ],
+    [
+      "score",
+      "mountsChip",
+      70,
+      33
+    ],
+    [
+      "score",
+      "companionsChip",
+      70,
+      33
+    ],
+    [
+      "tutcard",
+      "abilitybar",
+      285,
+      58
+    ],
+    [
+      "photochip",
+      "standings",
+      118,
+      32
+    ],
+    [
+      "bestiaryChip",
+      "achievementsChip",
+      44,
+      33
+    ],
+    [
+      "bestiaryChip",
+      "mountsChip",
+      83,
+      29
+    ],
+    [
+      "achievementsChip",
+      "mountsChip",
+      44,
+      33
+    ],
+    [
+      "achievementsChip",
+      "companionsChip",
+      44,
+      4
+    ],
+    [
+      "fastTravelChip",
+      "radiantChip",
+      44,
+      44
+    ],
+    [
+      "atlasChip",
+      "timedChip",
+      44,
+      42
+    ]
+  ],
+  "overlapsRest": [
+    [
+      "score",
+      "skillsChip",
+      70,
+      29
+    ],
+    [
+      "score",
+      "bestiaryChip",
+      70,
+      33
+    ],
+    [
+      "score",
+      "achievementsChip",
+      40,
+      44
+    ],
+    [
+      "score",
+      "mountsChip",
+      70,
+      33
+    ],
+    [
+      "score",
+      "companionsChip",
+      70,
+      33
+    ],
+    [
+      "photochip",
+      "standings",
+      118,
+      32
+    ],
+    [
+      "bestiaryChip",
+      "achievementsChip",
+      44,
+      33
+    ],
+    [
+      "bestiaryChip",
+      "mountsChip",
+      83,
+      29
+    ],
+    [
+      "achievementsChip",
+      "mountsChip",
+      44,
+      33
+    ],
+    [
+      "achievementsChip",
+      "companionsChip",
+      44,
+      4
+    ],
+    [
+      "fastTravelChip",
+      "radiantChip",
+      44,
+      44
+    ],
+    [
+      "atlasChip",
+      "timedChip",
+      44,
+      42
+    ]
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "view": "spawn",
+  "config": "desktop",
+  "tag": "p2base",
+  "samples": 8,
+  "medians": {
+    "calls": 601,
+    "triangles": 1829158,
+    "geometries": 327,
+    "textures": 25,
+    "programs": 38,
+    "instancedMeshes": 237,
+    "instances": 182019,
+    "populatedMeshes": 233,
+    "visibleInstancedMeshes": 235,
+    "buckets": null,
+    "specEnv": "ruins",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      595,
+      601
+    ],
+    "triangles": [
+      1709158,
+      1829158
+    ],
+    "geometries": [
+      321,
+      327
+    ],
+    "textures": [
+      25,
+      25
+    ],
+    "programs": [
+      38,
+      38
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      182019,
+      182019
+    ],
+    "populatedMeshes": [
+      233,
+      233
+    ],
+    "visibleInstancedMeshes": [
+      235,
+      235
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.332,
+  "consoleErrors": []
+}

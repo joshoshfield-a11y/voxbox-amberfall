@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Core Tests (node:test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install root deps
+        run: npm install
+
+      - name: Run operator + reflector + seal tests
+        run: npm test
+
+      - name: Run smoke test
+        run: npm run test:smoke
+
+  build:
+    name: v7.0 Prime Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: additions-and-logic/xandria-engine-v7.0-prime
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: additions-and-logic/xandria-engine-v7.0-prime/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          GEMINI_API_KEY: placeholder-build-key

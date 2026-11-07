@@ -1,0 +1,255 @@
+{
+  "results": {
+    "shardVisual": {
+      "count": 14,
+      "geometry": null,
+      "color": null,
+      "emissive": null,
+      "emissiveIntensity": null
+    },
+    "campSite": null,
+    "drownedSpireToast": {
+      "found": false,
+      "seen": [
+        "Tutorial skipped."
+      ]
+    },
+    "firstNode": {
+      "x": 3704.784741265153,
+      "z": -446.99759329651084
+    },
+    "amberwoodToast": {
+      "found": false,
+      "seen": [
+        "Tutorial skipped."
+      ]
+    },
+    "bloomInGame": {
+      "meshesGe2": 224,
+      "byIntensity": {
+        "2": 98,
+        "3": 1,
+        "2.2": 32,
+        "2.4": 9,
+        "2.8": 15,
+        "2.6": 5,
+        "2.5": 64
+      },
+      "sample": [
+        {
+          "geo": "BoxGeometry",
+          "ei": 2.2,
+          "hex": "#ffb545"
+        },
+        {
+          "geo": "BoxGeometry",
+          "ei": 2.4,
+          "hex": "#bfe6ff"
+        },
+        {
+          "geo": "BoxGeometry",
+          "ei": 3,
+          "hex": "#ffffff"
+        },
+        {
+          "geo": "BoxGeometry",
+          "ei": 2.8,
+          "hex": "#ffd27a"
+        },
+        {
+          "geo": "BoxGeometry",
+          "ei": 2.8,
+          "hex": "#ffb545"
+        }
+      ]
+    },
+    "questBeforeReload": {
+      "accepted": "accept:quest_story_1_first_blood",
+      "before": [
+        {
+          "id": "quest_story_2_the_maker",
+          "status": "locked"
+        },
+        {
+          "id": "quest_story_3_word_travels",
+          "status": "locked"
+        },
+        {
+          "id": "quest_story_4_wayfarer",
+          "status": "locked"
+        }
+      ],
+      "mid": [
+        {
+          "id": "quest_story_1_first_blood",
+          "status": "active"
+        },
+        {
+          "id": "quest_story_2_the_maker",
+          "status": "locked"
+        },
+        {
+          "id": "quest_story_3_word_travels",
+          "status": "locked"
+        },
+        {
+          "id": "quest_story_4_wayfarer",
+          "status": "locked"
+        }
+      ]
+    },
+    "questAfterReload": [
+      {
+        "id": "quest_story_1_first_blood",
+        "status": "active"
+      },
+      {
+        "id": "quest_story_2_the_maker",
+        "status": "locked"
+      },
+      {
+        "id": "quest_story_3_word_travels",
+        "status": "locked"
+      },
+      {
+        "id": "quest_story_4_wayfarer",
+        "status": "locked"
+      }
+    ],
+    "questPersistence": {
+      "acceptedId": "quest_story_1_first_blood",
+      "statusBefore": "active",
+      "statusAfter": "active"
+    },
+    "hud-desktop": {
+      "boxes": [
+        {
+          "id": ".xhud .score",
+          "x": 1194,
+          "y": 220,
+          "w": 70,
+          "h": 146
+        },
+        {
+          "id": ".xhud .objective",
+          "x": 16,
+          "y": 16,
+          "w": 202,
+          "h": 84
+        },
+        {
+          "id": ".xhud .bars",
+          "x": 16,
+          "y": 639,
+          "w": 270,
+          "h": 65
+        },
+        {
+          "id": ".xhud .hint",
+          "x": 381,
+          "y": 675,
+          "w": 519,
+          "h": 27
+        },
+        {
+          "id": "#xandria-skills-chip",
+          "x": 1194,
+          "y": 12,
+          "w": 74,
+          "h": 33
+        },
+        {
+          "id": "#xandria-bestiary-chip",
+          "x": 1175,
+          "y": 52,
+          "w": 93,
+          "h": 33
+        },
+        {
+          "id": "#xandria-mounts-chip",
+          "x": 1185,
+          "y": 140,
+          "w": 83,
+          "h": 33
+        },
+        {
+          "id": "#xandria-companions-chip",
+          "x": 1152,
+          "y": 180,
+          "w": 116,
+          "h": 33
+        }
+      ],
+      "overlaps": []
+    },
+    "hud-phone": {
+      "boxes": [
+        {
+          "id": ".xhud .score",
+          "x": 762,
+          "y": 12,
+          "w": 70,
+          "h": 146
+        },
+        {
+          "id": ".xhud .objective",
+          "x": 12,
+          "y": 12,
+          "w": 202,
+          "h": 84
+        },
+        {
+          "id": ".xhud .bars",
+          "x": 12,
+          "y": 248,
+          "w": 220,
+          "h": 65
+        },
+        {
+          "id": ".xhud .hint",
+          "x": 216,
+          "y": 86,
+          "w": 413,
+          "h": 27
+        },
+        {
+          "id": ".xtouch .pausebtn",
+          "x": 710,
+          "y": 10,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "#xandria-skills-chip",
+          "x": 222,
+          "y": 10,
+          "w": 64,
+          "h": 26
+        },
+        {
+          "id": "#xandria-bestiary-chip",
+          "x": 294,
+          "y": 10,
+          "w": 81,
+          "h": 26
+        },
+        {
+          "id": "#xandria-mounts-chip",
+          "x": 382,
+          "y": 10,
+          "w": 72,
+          "h": 26
+        },
+        {
+          "id": "#xandria-companions-chip",
+          "x": 464,
+          "y": 10,
+          "w": 102,
+          "h": 28
+        }
+      ],
+      "overlaps": []
+    }
+  },
+  "errors": []
+}

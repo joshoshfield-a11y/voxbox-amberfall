@@ -1,0 +1,63 @@
+{
+  "tag": "844x390",
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "errors": [],
+  "info": {
+    "spawn": {
+      "x": 0,
+      "z": 0
+    },
+    "list": [
+      {
+        "kind": "beam-tower",
+        "x": 2328.9,
+        "z": -565.8,
+        "radius": 6,
+        "discR": 15.8,
+        "dist": 2396.6,
+        "align": -0.236
+      },
+      {
+        "kind": "ruin-arch",
+        "x": -1969.4,
+        "z": -3743.5,
+        "radius": 5,
+        "discR": 14,
+        "dist": 4230,
+        "align": -0.885
+      },
+      {
+        "kind": "bridge",
+        "x": 3694.2,
+        "z": -459.4,
+        "radius": 9,
+        "discR": 21.2,
+        "dist": 3722.6,
+        "align": -0.123
+      },
+      {
+        "kind": "bridge",
+        "x": -3176,
+        "z": -614.3,
+        "radius": 9,
+        "discR": 21.2,
+        "dist": 3234.9,
+        "align": -0.19
+      }
+    ],
+    "subject": {
+      "kind": "beam-tower",
+      "x": 2328.9,
+      "z": -565.8,
+      "radius": 6,
+      "discR": 15.8,
+      "dist": 2396.6,
+      "align": -0.236
+    },
+    "hasAvatar": true,
+    "avatarCtrl": true
+  }
+}

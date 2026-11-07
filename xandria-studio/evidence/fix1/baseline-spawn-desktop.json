@@ -1,0 +1,66 @@
+{
+  "view": "spawn",
+  "config": "desktop",
+  "tag": "baseline",
+  "samples": 8,
+  "medians": {
+    "calls": 665,
+    "triangles": 1910722,
+    "geometries": 368,
+    "textures": 31,
+    "programs": 42,
+    "instancedMeshes": 237,
+    "instances": 182019,
+    "populatedMeshes": 233,
+    "visibleInstancedMeshes": 235,
+    "buckets": null,
+    "specEnv": "ruins",
+    "specTod": "dusk",
+    "specSeed": 1963762346,
+    "specGenre": "third-person-action"
+  },
+  "sampleRanges": {
+    "calls": [
+      601,
+      667
+    ],
+    "triangles": [
+      1828822,
+      1950722
+    ],
+    "geometries": [
+      327,
+      370
+    ],
+    "textures": [
+      31,
+      31
+    ],
+    "programs": [
+      41,
+      42
+    ],
+    "instancedMeshes": [
+      237,
+      237
+    ],
+    "instances": [
+      182019,
+      182019
+    ],
+    "populatedMeshes": [
+      233,
+      233
+    ],
+    "visibleInstancedMeshes": [
+      235,
+      235
+    ],
+    "specSeed": [
+      1963762346,
+      1963762346
+    ]
+  },
+  "meanLuma": 0.2838,
+  "consoleErrors": []
+}

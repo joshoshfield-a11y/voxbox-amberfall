@@ -1,0 +1,48 @@
+{
+  "tag": "desktop",
+  "shot": {
+    "hx": 2316.6,
+    "hz": -562.8,
+    "hy": 2
+  },
+  "syncCheck": {
+    "synced": true,
+    "polls": 2,
+    "body": {
+      "x": 2316.6,
+      "y": 1.7,
+      "z": -562.8
+    },
+    "rig": {
+      "x": 2316.6,
+      "y": 0.9,
+      "z": -562.8
+    },
+    "rigVisible": true
+  },
+  "streamed": {
+    "streamed": true,
+    "polls": 1,
+    "builtMeshes": 32
+  },
+  "photo": {
+    "entered": true,
+    "yaw": -1.332,
+    "orbit": {
+      "yaw": -1.3324664211200414,
+      "pitch": 0.2,
+      "distance": 10
+    },
+    "state": "playing",
+    "subject": {
+      "kind": "beam-tower",
+      "x": 2328.9,
+      "z": -565.8,
+      "radius": 6,
+      "discR": 15.8,
+      "dist": 2396.6,
+      "align": -0.236
+    }
+  },
+  "errors": []
+}
